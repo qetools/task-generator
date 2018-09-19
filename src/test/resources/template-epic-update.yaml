@@ -1,0 +1,7 @@
+epics:
+- summary: Epic 1
+  assignee: user1
+  fixVersion: 1.0
+- summary: Epic 2
+  assignee: user2
+  fixVersion: 2.0

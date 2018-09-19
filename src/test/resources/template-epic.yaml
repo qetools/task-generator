@@ -1,0 +1,4 @@
+epics:
+- summary: Epic 1
+  assignee: user1
+  fixVersion: 1.0
