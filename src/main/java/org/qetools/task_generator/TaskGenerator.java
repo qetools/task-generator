@@ -5,13 +5,16 @@ import static org.qetools.task_generator.jql.WithField.withField;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
+import org.apache.commons.text.StringSubstitutor;
 import org.qetools.task_generator.api.JiraClient;
 import org.qetools.task_generator.core.Epic;
 import org.qetools.task_generator.core.Task;
@@ -23,36 +26,47 @@ public class TaskGenerator {
 	public static final String JIRA_URL = "https://issues.jboss.org";
 
 	private JiraClient jira;
+	private File propertyFile;
+	private StringSubstitutor variableResolver;
 
 	public TaskGenerator(JiraClient jira) throws FileNotFoundException, IOException {
-//		Properties jiraCredentials = new Properties();
-//		jiraCredentials.load(new FileReader(System.getProperty("user.home") + "/.ssh/.jira_credentials"));
-//		String username = jiraCredentials.getProperty("username");
-//		String password = jiraCredentials.getProperty("password");
-
-		this.jira = jira;
-		this.jira.setUrl(JIRA_URL);
-//		this.jira.setCredentials(username, password);
+		this(jira, null);
 	}
 
-	public TaskGenerator(JiraClient jira, File credentialsFile) throws FileNotFoundException, IOException {
-		Properties jiraCredentials = new Properties();
-		jiraCredentials.load(new FileReader(credentialsFile));
-		String username = jiraCredentials.getProperty("username");
-		String password = jiraCredentials.getProperty("password");
-
+	public TaskGenerator(JiraClient jira, File propertyFile) throws FileNotFoundException, IOException {
 		this.jira = jira;
-		this.jira.setUrl(JIRA_URL);
-		this.jira.setCredentials(username, password);
+		this.propertyFile = propertyFile;
 	}
 
 	public void generate(File yamlFile) {
 		Template template = loadYamlFile(yamlFile);
+		List<File> propertyFiles = new ArrayList<>();
+		if (propertyFile != null) {
+			propertyFiles.add(propertyFile);
+		}
+		template.getPropertyFiles().forEach(path -> propertyFiles.add(Utils.getRelativeFile(yamlFile, path)));
+		variableResolver = new StringSubstitutor(new PropertiesLookup(propertyFiles));
+
 		template.getEpics().forEach(epic -> createEpic(epic));
 		template.getTasks().forEach(task -> createTask(task, null));
 	}
 
-	public void createEpic(Epic epic) {
+	protected void initializeJiraClient() {
+		String jiraUrl = variableResolver.getStringLookup().lookup("JIRA_URL");
+		String jiraProject = variableResolver.getStringLookup().lookup("JIRA_PROJECT");
+		String jiraUsername = variableResolver.getStringLookup().lookup("JIRA_USERNAME");
+		String jiraPassword = variableResolver.getStringLookup().lookup("JIRA_PASSWORD");
+		String jiraPasswordBase64 = variableResolver.getStringLookup().lookup("JIRA_PASSWORD_BASE64");
+
+		jira.setUrl(jiraUrl);
+		if (jiraPassword == null) {
+			jiraPassword = new String(Base64.getDecoder().decode(jiraPasswordBase64), Charset.forName("UTF-8"));
+		}
+		jira.setCredentials(jiraUsername, jiraPassword);
+		jira.initialize();
+	}
+
+	protected void createEpic(Epic epic) {
 		if (!jira.exists(withField("summary", epic.getSummary()))) {
 			jira.create(fields(epic));
 		}
@@ -60,32 +74,24 @@ public class TaskGenerator {
 		epic.getSubtasks().forEach(subtask -> createSubtask(subtask, epic));
 	}
 
-	public void createTask(Task task, Task epic) {
+	protected void createTask(Task task, Task epic) {
 		if (!jira.exists(withField("summary", task.getSummary()))) {
 			jira.create(fields(task));
 		}
 		task.getSubtasks().forEach(subtask -> createSubtask(subtask, task));
 	}
 
-	public void createSubtask(Task subtask, Task task) {
+	protected void createSubtask(Task subtask, Task task) {
 		if (!jira.exists(withField("summary", subtask.getSummary()))) {
 			jira.create(fields(subtask));
 		}
 	}
 
-	private static Map<String, String> fields(Epic epic) {
+	private Map<String, String> fields(Task task) {
 		Map<String, String> fields = new HashMap<>();
-		fields.put("summary", epic.getSummary());
-		fields.put("assignee", epic.getAssignee());
-		fields.put("fixVersion", epic.getFixVersion());
-		return fields;
-	}
-
-	private static Map<String, String> fields(Task task) {
-		Map<String, String> fields = new HashMap<>();
-		fields.put("summary", task.getSummary());
-		fields.put("assignee", task.getAssignee());
-		fields.put("fixVersion", task.getFixVersion());
+		fields.put("summary", variableResolver.replace(task.getSummary()));
+		fields.put("assignee", variableResolver.replace(task.getAssignee()));
+		fields.put("fixVersion", variableResolver.replace(task.getFixVersion()));
 		return fields;
 	}
 

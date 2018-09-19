@@ -7,11 +7,11 @@ import static org.qetools.task_generator.jql.WithField.withField;
 
 import java.io.File;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ErrorCollector;
-import org.qetools.task_generator.TaskGenerator;
 import org.qetools.task_generator.impl.JiraClientImpl;
 
 public class TaskGeneratorTest {
@@ -25,6 +25,14 @@ public class TaskGeneratorTest {
 	public void initializeJiraClient() {
 		jira = new JiraClientImpl();
 		jira.initialize();
+	}
+
+	@After
+	public void cleanSystemProperties() {
+		System.getProperties().remove("epicNumber1");
+		System.getProperties().remove("taskNumber1");
+		System.getProperties().remove("subtaskNumber1");
+		System.getProperties().remove("subtaskNumber2");
 	}
 
 	@Test
@@ -200,6 +208,77 @@ public class TaskGeneratorTest {
 		assertIssue(1, PROJECT + "-2", "Subtask 11");
 		assertIssue(2, PROJECT + "-3", "Subtask 12");
 	}
+
+	@Test
+	public void testGeneratingWithSubstitution() throws Exception {
+		System.setProperty("epicNumber1", "1");
+		System.setProperty("taskNumber1", "11");
+		System.setProperty("subtaskNumber1", "111");
+		System.setProperty("subtaskNumber2", "112");
+		File yamlFile = getFile("template-substitution.yaml");
+		new TaskGenerator(jira).generate(yamlFile);
+		collector.checkThat(jira.getAllIssues().size(), equalTo(4));
+		assertIssue(0, PROJECT + "-1", "Epic 1");
+		assertIssue(1, PROJECT + "-2", "Task 11");
+		assertIssue(2, PROJECT + "-3", "Subtask 111");
+		assertIssue(3, PROJECT + "-4", "Subtask 112");
+	}
+
+	@Test
+	public void testGeneratingWithMissingSubstitution() throws Exception {
+		System.setProperty("epicNumber1", "1");
+		System.setProperty("subtaskNumber1", "111");
+		System.setProperty("subtaskNumber2", "112");
+		File yamlFile = getFile("template-substitution.yaml");
+		new TaskGenerator(jira).generate(yamlFile);
+		collector.checkThat(jira.getAllIssues().size(), equalTo(4));
+		assertIssue(0, PROJECT + "-1", "Epic 1");
+		assertIssue(1, PROJECT + "-2", "Task ${taskNumber1}");
+		assertIssue(2, PROJECT + "-3", "Subtask 111");
+		assertIssue(3, PROJECT + "-4", "Subtask 112");
+	}
+
+	@Test
+	public void testGeneratingWithSubstitutionInPropertyFile() throws Exception {
+		System.setProperty("subtaskNumber1", "111");
+		System.setProperty("subtaskNumber2", "112");
+		File yamlFile = getFile("template-substitution-propertyFile.yaml");
+		new TaskGenerator(jira).generate(yamlFile);
+		collector.checkThat(jira.getAllIssues().size(), equalTo(4));
+		assertIssue(0, PROJECT + "-1", "Epic 01");
+		assertIssue(1, PROJECT + "-2", "Task 01");
+		assertIssue(2, PROJECT + "-3", "Subtask 111");
+		assertIssue(3, PROJECT + "-4", "Subtask 112");
+	}
+
+	@Test
+	public void testGeneratingWithSubstitutionInPropertyFileAndOverridenBySystemProperty() throws Exception {
+		System.setProperty("taskNumber1", "11");
+		System.setProperty("subtaskNumber1", "111");
+		System.setProperty("subtaskNumber2", "112");
+		File yamlFile = getFile("template-substitution-propertyFile.yaml");
+		new TaskGenerator(jira).generate(yamlFile);
+		collector.checkThat(jira.getAllIssues().size(), equalTo(4));
+		assertIssue(0, PROJECT + "-1", "Epic 01");
+		assertIssue(1, PROJECT + "-2", "Task 11");
+		assertIssue(2, PROJECT + "-3", "Subtask 111");
+		assertIssue(3, PROJECT + "-4", "Subtask 112");
+	}
+
+	@Test
+	public void testGeneratingWithSubstitutionInPropertyFiles() throws Exception {
+		System.setProperty("taskNumber1", "011");
+		System.setProperty("subtaskNumber1", "111");
+		System.setProperty("subtaskNumber2", "112");
+		File yamlFile = getFile("template-substitution-propertyFiles.yaml");
+		new TaskGenerator(jira).generate(yamlFile);
+		collector.checkThat(jira.getAllIssues().size(), equalTo(4));
+		assertIssue(0, PROJECT + "-1", "Epic 001");
+		assertIssue(1, PROJECT + "-2", "Task 011");
+		assertIssue(2, PROJECT + "-3", "Subtask 111");
+		assertIssue(3, PROJECT + "-4", "Subtask 112");
+	}
+
 	private void assertIssue(int index, String expectedKey, String expectedSummary) {
 		collector.checkThat("Cannot find issue with key '" + expectedKey + "'",
 				jira.exists(withField("key", expectedKey)), is(true));

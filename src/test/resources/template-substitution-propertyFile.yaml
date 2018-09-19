@@ -1,0 +1,15 @@
+propertyFiles:
+  - custom1.properties
+
+epics:
+- summary: Epic ${epicNumber1}
+  assignee: user1
+  fixVersion: 1.0
+  tasks:
+    - summary: Task ${taskNumber1}
+      assignee: user11
+      subtasks:
+        - summary: Subtask ${subtaskNumber1}
+          assignee: user111
+        - summary: Subtask ${subtaskNumber2}
+          assignee: user112
