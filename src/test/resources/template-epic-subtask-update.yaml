@@ -1,0 +1,9 @@
+epics:
+- summary: Epic 1
+  assignee: user1
+  fixVersion: 1.0
+  subtasks:
+    - summary: Subtask 11
+      assignee: user11
+    - summary: Subtask 12
+      assignee: user12

@@ -115,6 +115,36 @@ public class TaskGeneratorTest {
 		assertIssue(2, PROJECT + "-3", "Subtask 111");
 		assertIssue(3, PROJECT + "-4", "Subtask 112");
 	}
+	
+
+	@Test
+	public void testGeneratingEpicAndSubtask() throws Exception {
+		File yamlFile = getFile("template-epic-subtask.yaml");
+		new TaskGenerator(jira).generate(yamlFile);
+		collector.checkThat(jira.getAllIssues().size(), equalTo(2));
+		assertIssue(0, PROJECT + "-1", "Epic 1");
+		assertIssue(1, PROJECT + "-2", "Subtask 11");
+	}
+
+	@Test
+	public void testGeneratingEpicAndSubtaskRetry() throws Exception {
+		File yamlFile = getFile("template-epic-subtask.yaml");
+		new TaskGenerator(jira).generate(yamlFile);
+		collector.checkThat(jira.getAllIssues().size(), equalTo(2));
+		assertIssue(0, PROJECT + "-1", "Epic 1");
+		assertIssue(1, PROJECT + "-2", "Subtask 11");
+	}
+
+	@Test
+	public void testGeneratingEpicAndSubtaskUpdate() throws Exception {
+		File yamlFile = getFile("template-epic-subtask-update.yaml");
+		new TaskGenerator(jira).generate(yamlFile);
+		new TaskGenerator(jira).generate(yamlFile);
+		collector.checkThat(jira.getAllIssues().size(), equalTo(3));
+		assertIssue(0, PROJECT + "-1", "Epic 1");
+		assertIssue(1, PROJECT + "-2", "Subtask 11");
+		assertIssue(2, PROJECT + "-3", "Subtask 12");
+	}
 
 	private void assertIssue(int index, String expectedKey, String expectedSummary) {
 		collector.checkThat("Cannot find issue with key '" + expectedKey + "'",

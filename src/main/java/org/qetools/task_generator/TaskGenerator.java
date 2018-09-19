@@ -57,9 +57,10 @@ public class TaskGenerator {
 			jira.create(fields(epic));
 		}
 		epic.getTasks().forEach(task -> createTask(task, epic));
+		epic.getSubtasks().forEach(subtask -> createSubtask(subtask, epic));
 	}
 
-	public void createTask(Task task, Epic epic) {
+	public void createTask(Task task, Task epic) {
 		if (!jira.exists(withField("summary", task.getSummary()))) {
 			jira.create(fields(task));
 		}

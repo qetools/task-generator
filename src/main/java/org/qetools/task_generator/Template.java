@@ -20,7 +20,7 @@ public class Template {
 	}
 
 	public List<Task> getTasks() {
-		return tasks == null ? new ArrayList<>(): tasks;
+		return tasks == null ? new ArrayList<>() : tasks;
 	}
 
 	public void setTasks(List<Task> tasks) {
