@@ -12,7 +12,7 @@ public class Template {
 	private List<Task> tasks;
 
 	public List<Epic> getEpics() {
-		return epics;
+		return epics == null ? new ArrayList<>() : epics;
 	}
 
 	public void setEpics(List<Epic> epics) {

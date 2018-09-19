@@ -1,0 +1,5 @@
+tasks:
+- summary: Task 1
+  assignee: user1
+- summary: Task 2
+  assignee: user2

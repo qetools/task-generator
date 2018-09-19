@@ -115,7 +115,6 @@ public class TaskGeneratorTest {
 		assertIssue(2, PROJECT + "-3", "Subtask 111");
 		assertIssue(3, PROJECT + "-4", "Subtask 112");
 	}
-	
 
 	@Test
 	public void testGeneratingEpicAndSubtask() throws Exception {
@@ -146,6 +145,61 @@ public class TaskGeneratorTest {
 		assertIssue(2, PROJECT + "-3", "Subtask 12");
 	}
 
+	@Test
+	public void testGeneratingTask() throws Exception {
+		File yamlFile = getFile("template-task.yaml");
+		new TaskGenerator(jira).generate(yamlFile);
+		collector.checkThat(jira.getAllIssues().size(), equalTo(1));
+		assertIssue(0, PROJECT + "-1", "Task 1");
+	}
+
+	@Test
+	public void testGeneratingTaskRetry() throws Exception {
+		File yamlFile = getFile("template-task.yaml");
+		new TaskGenerator(jira).generate(yamlFile);
+		new TaskGenerator(jira).generate(yamlFile);
+		collector.checkThat(jira.getAllIssues().size(), equalTo(1));
+		assertIssue(0, PROJECT + "-1", "Task 1");
+	}
+
+	@Test
+	public void testGeneratingTaskUpdate() throws Exception {
+		File yamlFile = getFile("template-task-update.yaml");
+		new TaskGenerator(jira).generate(yamlFile);
+		new TaskGenerator(jira).generate(yamlFile);
+		collector.checkThat(jira.getAllIssues().size(), equalTo(2));
+		assertIssue(0, PROJECT + "-1", "Task 1");
+		assertIssue(1, PROJECT + "-2", "Task 2");
+	}
+
+	@Test
+	public void testGeneratingTaskAndSubtask() throws Exception {
+		File yamlFile = getFile("template-task-subtask.yaml");
+		new TaskGenerator(jira).generate(yamlFile);
+		collector.checkThat(jira.getAllIssues().size(), equalTo(2));
+		assertIssue(0, PROJECT + "-1", "Task 1");
+		assertIssue(1, PROJECT + "-2", "Subtask 11");
+	}
+
+	@Test
+	public void testGeneratingTaskAndSubtaskRetry() throws Exception {
+		File yamlFile = getFile("template-task-subtask.yaml");
+		new TaskGenerator(jira).generate(yamlFile);
+		collector.checkThat(jira.getAllIssues().size(), equalTo(2));
+		assertIssue(0, PROJECT + "-1", "Task 1");
+		assertIssue(1, PROJECT + "-2", "Subtask 11");
+	}
+
+	@Test
+	public void testGeneratingTaskAndSubtaskUpdate() throws Exception {
+		File yamlFile = getFile("template-task-subtask-update.yaml");
+		new TaskGenerator(jira).generate(yamlFile);
+		new TaskGenerator(jira).generate(yamlFile);
+		collector.checkThat(jira.getAllIssues().size(), equalTo(3));
+		assertIssue(0, PROJECT + "-1", "Task 1");
+		assertIssue(1, PROJECT + "-2", "Subtask 11");
+		assertIssue(2, PROJECT + "-3", "Subtask 12");
+	}
 	private void assertIssue(int index, String expectedKey, String expectedSummary) {
 		collector.checkThat("Cannot find issue with key '" + expectedKey + "'",
 				jira.exists(withField("key", expectedKey)), is(true));
