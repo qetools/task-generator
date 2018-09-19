@@ -11,38 +11,43 @@ import org.qetools.task_generator.api.JiraIssue;
 
 public class JiraClientImpl implements JiraClient {
 
-	public static final String PROJECT = "TEST";
-
 	private int index;
+	private String url;
+	private String username;
+	private String password;
 	private List<JiraIssue> issues;
 
 	@Override
 	public void setUrl(String url) {
-		// ignore
+		this.url = url;
 	}
 
 	@Override
 	public void setCredentials(String username, String password) {
-		// ignore
+		this.username = username;
+		this.password = password;
 	}
 
 	@Override
 	public void initialize() {
 		index = 1;
+		if (!"bot".equals(username) || !"admin123".equals(password)) {
+			throw new RuntimeException("Incorrect credentials");
+		}
 		issues = new ArrayList<>();
 	}
 
 	@Override
 	public JiraIssue create(Map<String, String> fields) {
 		JiraIssue issue = new JiraIssueImpl(fields);
-		issue.setField("key", PROJECT + "-" + index++);
+		issue.setField("key", fields.get("project") + "-" + index++);
 		issues.add(issue);
 		return issue;
 	}
 
 	@Override
 	public JiraIssue create(JiraIssue issue) {
-		issue.setField("key", PROJECT + "-" + index++);
+		issue.setField("key", issue.getField("project") + "-" + index++);
 		issues.add(issue);
 		return issue;
 	}
@@ -64,7 +69,7 @@ public class JiraClientImpl implements JiraClient {
 		}
 		return issues.stream().anyMatch(issue -> summary.equals(issue.getField("summary")));
 	}
-	
+
 	@Override
 	public boolean exists(Matcher<JiraIssue> matcher) {
 		if (matcher == null) {

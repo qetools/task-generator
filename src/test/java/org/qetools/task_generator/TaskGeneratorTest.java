@@ -2,10 +2,11 @@ package org.qetools.task_generator;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.qetools.task_generator.impl.JiraClientImpl.PROJECT;
 import static org.qetools.task_generator.jql.WithField.withField;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -16,6 +17,8 @@ import org.qetools.task_generator.impl.JiraClientImpl;
 
 public class TaskGeneratorTest {
 
+	public static final String PROJECT = "TEST";
+
 	private JiraClientImpl jira;
 
 	@Rule
@@ -24,7 +27,6 @@ public class TaskGeneratorTest {
 	@Before
 	public void initializeJiraClient() {
 		jira = new JiraClientImpl();
-		jira.initialize();
 	}
 
 	@After
@@ -38,7 +40,7 @@ public class TaskGeneratorTest {
 	@Test
 	public void testGeneratingEpic() throws Exception {
 		File yamlFile = getFile("template-epic.yaml");
-		new TaskGenerator(jira).generate(yamlFile);
+		getTaskGenerator().generate(yamlFile);
 		collector.checkThat(jira.getAllIssues().size(), equalTo(1));
 		assertIssue(0, PROJECT + "-1", "Epic 1");
 	}
@@ -46,8 +48,8 @@ public class TaskGeneratorTest {
 	@Test
 	public void testGeneratingEpicRetry() throws Exception {
 		File yamlFile = getFile("template-epic.yaml");
-		new TaskGenerator(jira).generate(yamlFile);
-		new TaskGenerator(jira).generate(yamlFile);
+		getTaskGenerator().generate(yamlFile);
+		getTaskGenerator().generate(yamlFile);
 		collector.checkThat(jira.getAllIssues().size(), equalTo(1));
 		assertIssue(0, PROJECT + "-1", "Epic 1");
 	}
@@ -55,8 +57,8 @@ public class TaskGeneratorTest {
 	@Test
 	public void testGeneratingEpicUpdate() throws Exception {
 		File yamlFile = getFile("template-epic-update.yaml");
-		new TaskGenerator(jira).generate(yamlFile);
-		new TaskGenerator(jira).generate(yamlFile);
+		getTaskGenerator().generate(yamlFile);
+		getTaskGenerator().generate(yamlFile);
 		collector.checkThat(jira.getAllIssues().size(), equalTo(2));
 		assertIssue(0, PROJECT + "-1", "Epic 1");
 		assertIssue(1, PROJECT + "-2", "Epic 2");
@@ -65,7 +67,7 @@ public class TaskGeneratorTest {
 	@Test
 	public void testGeneratingEpicAndTask() throws Exception {
 		File yamlFile = getFile("template-epic-task.yaml");
-		new TaskGenerator(jira).generate(yamlFile);
+		getTaskGenerator().generate(yamlFile);
 		collector.checkThat(jira.getAllIssues().size(), equalTo(2));
 		assertIssue(0, PROJECT + "-1", "Epic 1");
 		assertIssue(1, PROJECT + "-2", "Task 11");
@@ -74,8 +76,8 @@ public class TaskGeneratorTest {
 	@Test
 	public void testGeneratingEpicAndTaskRetry() throws Exception {
 		File yamlFile = getFile("template-epic-task.yaml");
-		new TaskGenerator(jira).generate(yamlFile);
-		new TaskGenerator(jira).generate(yamlFile);
+		getTaskGenerator().generate(yamlFile);
+		getTaskGenerator().generate(yamlFile);
 		collector.checkThat(jira.getAllIssues().size(), equalTo(2));
 		assertIssue(0, PROJECT + "-1", "Epic 1");
 		assertIssue(1, PROJECT + "-2", "Task 11");
@@ -84,8 +86,8 @@ public class TaskGeneratorTest {
 	@Test
 	public void testGeneratingEpicAndTaskUpdate() throws Exception {
 		File yamlFile = getFile("template-epic-task-update.yaml");
-		new TaskGenerator(jira).generate(yamlFile);
-		new TaskGenerator(jira).generate(yamlFile);
+		getTaskGenerator().generate(yamlFile);
+		getTaskGenerator().generate(yamlFile);
 		collector.checkThat(jira.getAllIssues().size(), equalTo(3));
 		assertIssue(0, PROJECT + "-1", "Epic 1");
 		assertIssue(1, PROJECT + "-2", "Task 11");
@@ -95,7 +97,7 @@ public class TaskGeneratorTest {
 	@Test
 	public void testGeneratingEpicAndTaskAndSubtask() throws Exception {
 		File yamlFile = getFile("template-epic-task-subtask.yaml");
-		new TaskGenerator(jira).generate(yamlFile);
+		getTaskGenerator().generate(yamlFile);
 		collector.checkThat(jira.getAllIssues().size(), equalTo(3));
 		assertIssue(0, PROJECT + "-1", "Epic 1");
 		assertIssue(1, PROJECT + "-2", "Task 11");
@@ -105,7 +107,7 @@ public class TaskGeneratorTest {
 	@Test
 	public void testGeneratingEpicAndTaskAndSubtaskRetry() throws Exception {
 		File yamlFile = getFile("template-epic-task-subtask.yaml");
-		new TaskGenerator(jira).generate(yamlFile);
+		getTaskGenerator().generate(yamlFile);
 		collector.checkThat(jira.getAllIssues().size(), equalTo(3));
 		assertIssue(0, PROJECT + "-1", "Epic 1");
 		assertIssue(1, PROJECT + "-2", "Task 11");
@@ -115,8 +117,8 @@ public class TaskGeneratorTest {
 	@Test
 	public void testGeneratingEpicAndTaskAndSubtaskUpdate() throws Exception {
 		File yamlFile = getFile("template-epic-task-subtask-update.yaml");
-		new TaskGenerator(jira).generate(yamlFile);
-		new TaskGenerator(jira).generate(yamlFile);
+		getTaskGenerator().generate(yamlFile);
+		getTaskGenerator().generate(yamlFile);
 		collector.checkThat(jira.getAllIssues().size(), equalTo(4));
 		assertIssue(0, PROJECT + "-1", "Epic 1");
 		assertIssue(1, PROJECT + "-2", "Task 11");
@@ -127,7 +129,7 @@ public class TaskGeneratorTest {
 	@Test
 	public void testGeneratingEpicAndSubtask() throws Exception {
 		File yamlFile = getFile("template-epic-subtask.yaml");
-		new TaskGenerator(jira).generate(yamlFile);
+		getTaskGenerator().generate(yamlFile);
 		collector.checkThat(jira.getAllIssues().size(), equalTo(2));
 		assertIssue(0, PROJECT + "-1", "Epic 1");
 		assertIssue(1, PROJECT + "-2", "Subtask 11");
@@ -136,7 +138,7 @@ public class TaskGeneratorTest {
 	@Test
 	public void testGeneratingEpicAndSubtaskRetry() throws Exception {
 		File yamlFile = getFile("template-epic-subtask.yaml");
-		new TaskGenerator(jira).generate(yamlFile);
+		getTaskGenerator().generate(yamlFile);
 		collector.checkThat(jira.getAllIssues().size(), equalTo(2));
 		assertIssue(0, PROJECT + "-1", "Epic 1");
 		assertIssue(1, PROJECT + "-2", "Subtask 11");
@@ -145,8 +147,8 @@ public class TaskGeneratorTest {
 	@Test
 	public void testGeneratingEpicAndSubtaskUpdate() throws Exception {
 		File yamlFile = getFile("template-epic-subtask-update.yaml");
-		new TaskGenerator(jira).generate(yamlFile);
-		new TaskGenerator(jira).generate(yamlFile);
+		getTaskGenerator().generate(yamlFile);
+		getTaskGenerator().generate(yamlFile);
 		collector.checkThat(jira.getAllIssues().size(), equalTo(3));
 		assertIssue(0, PROJECT + "-1", "Epic 1");
 		assertIssue(1, PROJECT + "-2", "Subtask 11");
@@ -156,7 +158,7 @@ public class TaskGeneratorTest {
 	@Test
 	public void testGeneratingTask() throws Exception {
 		File yamlFile = getFile("template-task.yaml");
-		new TaskGenerator(jira).generate(yamlFile);
+		getTaskGenerator().generate(yamlFile);
 		collector.checkThat(jira.getAllIssues().size(), equalTo(1));
 		assertIssue(0, PROJECT + "-1", "Task 1");
 	}
@@ -164,8 +166,8 @@ public class TaskGeneratorTest {
 	@Test
 	public void testGeneratingTaskRetry() throws Exception {
 		File yamlFile = getFile("template-task.yaml");
-		new TaskGenerator(jira).generate(yamlFile);
-		new TaskGenerator(jira).generate(yamlFile);
+		getTaskGenerator().generate(yamlFile);
+		getTaskGenerator().generate(yamlFile);
 		collector.checkThat(jira.getAllIssues().size(), equalTo(1));
 		assertIssue(0, PROJECT + "-1", "Task 1");
 	}
@@ -173,8 +175,8 @@ public class TaskGeneratorTest {
 	@Test
 	public void testGeneratingTaskUpdate() throws Exception {
 		File yamlFile = getFile("template-task-update.yaml");
-		new TaskGenerator(jira).generate(yamlFile);
-		new TaskGenerator(jira).generate(yamlFile);
+		getTaskGenerator().generate(yamlFile);
+		getTaskGenerator().generate(yamlFile);
 		collector.checkThat(jira.getAllIssues().size(), equalTo(2));
 		assertIssue(0, PROJECT + "-1", "Task 1");
 		assertIssue(1, PROJECT + "-2", "Task 2");
@@ -183,7 +185,7 @@ public class TaskGeneratorTest {
 	@Test
 	public void testGeneratingTaskAndSubtask() throws Exception {
 		File yamlFile = getFile("template-task-subtask.yaml");
-		new TaskGenerator(jira).generate(yamlFile);
+		getTaskGenerator().generate(yamlFile);
 		collector.checkThat(jira.getAllIssues().size(), equalTo(2));
 		assertIssue(0, PROJECT + "-1", "Task 1");
 		assertIssue(1, PROJECT + "-2", "Subtask 11");
@@ -192,7 +194,7 @@ public class TaskGeneratorTest {
 	@Test
 	public void testGeneratingTaskAndSubtaskRetry() throws Exception {
 		File yamlFile = getFile("template-task-subtask.yaml");
-		new TaskGenerator(jira).generate(yamlFile);
+		getTaskGenerator().generate(yamlFile);
 		collector.checkThat(jira.getAllIssues().size(), equalTo(2));
 		assertIssue(0, PROJECT + "-1", "Task 1");
 		assertIssue(1, PROJECT + "-2", "Subtask 11");
@@ -201,8 +203,8 @@ public class TaskGeneratorTest {
 	@Test
 	public void testGeneratingTaskAndSubtaskUpdate() throws Exception {
 		File yamlFile = getFile("template-task-subtask-update.yaml");
-		new TaskGenerator(jira).generate(yamlFile);
-		new TaskGenerator(jira).generate(yamlFile);
+		getTaskGenerator().generate(yamlFile);
+		getTaskGenerator().generate(yamlFile);
 		collector.checkThat(jira.getAllIssues().size(), equalTo(3));
 		assertIssue(0, PROJECT + "-1", "Task 1");
 		assertIssue(1, PROJECT + "-2", "Subtask 11");
@@ -216,7 +218,7 @@ public class TaskGeneratorTest {
 		System.setProperty("subtaskNumber1", "111");
 		System.setProperty("subtaskNumber2", "112");
 		File yamlFile = getFile("template-substitution.yaml");
-		new TaskGenerator(jira).generate(yamlFile);
+		getTaskGenerator().generate(yamlFile);
 		collector.checkThat(jira.getAllIssues().size(), equalTo(4));
 		assertIssue(0, PROJECT + "-1", "Epic 1");
 		assertIssue(1, PROJECT + "-2", "Task 11");
@@ -230,7 +232,7 @@ public class TaskGeneratorTest {
 		System.setProperty("subtaskNumber1", "111");
 		System.setProperty("subtaskNumber2", "112");
 		File yamlFile = getFile("template-substitution.yaml");
-		new TaskGenerator(jira).generate(yamlFile);
+		getTaskGenerator().generate(yamlFile);
 		collector.checkThat(jira.getAllIssues().size(), equalTo(4));
 		assertIssue(0, PROJECT + "-1", "Epic 1");
 		assertIssue(1, PROJECT + "-2", "Task ${taskNumber1}");
@@ -243,7 +245,7 @@ public class TaskGeneratorTest {
 		System.setProperty("subtaskNumber1", "111");
 		System.setProperty("subtaskNumber2", "112");
 		File yamlFile = getFile("template-substitution-propertyFile.yaml");
-		new TaskGenerator(jira).generate(yamlFile);
+		getTaskGenerator().generate(yamlFile);
 		collector.checkThat(jira.getAllIssues().size(), equalTo(4));
 		assertIssue(0, PROJECT + "-1", "Epic 01");
 		assertIssue(1, PROJECT + "-2", "Task 01");
@@ -257,7 +259,7 @@ public class TaskGeneratorTest {
 		System.setProperty("subtaskNumber1", "111");
 		System.setProperty("subtaskNumber2", "112");
 		File yamlFile = getFile("template-substitution-propertyFile.yaml");
-		new TaskGenerator(jira).generate(yamlFile);
+		getTaskGenerator().generate(yamlFile);
 		collector.checkThat(jira.getAllIssues().size(), equalTo(4));
 		assertIssue(0, PROJECT + "-1", "Epic 01");
 		assertIssue(1, PROJECT + "-2", "Task 11");
@@ -271,12 +273,20 @@ public class TaskGeneratorTest {
 		System.setProperty("subtaskNumber1", "111");
 		System.setProperty("subtaskNumber2", "112");
 		File yamlFile = getFile("template-substitution-propertyFiles.yaml");
-		new TaskGenerator(jira).generate(yamlFile);
+		getTaskGenerator().generate(yamlFile);
 		collector.checkThat(jira.getAllIssues().size(), equalTo(4));
 		assertIssue(0, PROJECT + "-1", "Epic 001");
 		assertIssue(1, PROJECT + "-2", "Task 011");
 		assertIssue(2, PROJECT + "-3", "Subtask 111");
 		assertIssue(3, PROJECT + "-4", "Subtask 112");
+	}
+
+	@Test
+	public void testGeneratingEpicWithPasswordBase64() throws Exception {
+		File yamlFile = getFile("template-epic.yaml");
+		getTaskGenerator("jira2.properties").generate(yamlFile);
+		collector.checkThat(jira.getAllIssues().size(), equalTo(1));
+		assertIssue(0, PROJECT + "-1", "Epic 1");
 	}
 
 	private void assertIssue(int index, String expectedKey, String expectedSummary) {
@@ -288,5 +298,13 @@ public class TaskGeneratorTest {
 
 	private File getFile(String fileName) {
 		return new File(getClass().getClassLoader().getResource(fileName).getFile());
+	}
+
+	private TaskGenerator getTaskGenerator() throws FileNotFoundException, IOException {
+		return getTaskGenerator("jira1.properties");
+	}
+
+	private TaskGenerator getTaskGenerator(String fileName) throws FileNotFoundException, IOException {
+		return new TaskGenerator(jira, getFile(fileName));
 	}
 }

@@ -23,8 +23,6 @@ import org.yaml.snakeyaml.constructor.Constructor;
 
 public class TaskGenerator {
 
-	public static final String JIRA_URL = "https://issues.jboss.org";
-
 	private JiraClient jira;
 	private File propertyFile;
 	private StringSubstitutor variableResolver;
@@ -40,6 +38,13 @@ public class TaskGenerator {
 
 	public void generate(File yamlFile) {
 		Template template = loadYamlFile(yamlFile);
+		initializeJiraClient(template, yamlFile);
+
+		template.getEpics().forEach(epic -> createEpic(epic));
+		template.getTasks().forEach(task -> createTask(task, null));
+	}
+
+	protected void initializeJiraClient(Template template, File yamlFile) {
 		List<File> propertyFiles = new ArrayList<>();
 		if (propertyFile != null) {
 			propertyFiles.add(propertyFile);
@@ -47,11 +52,6 @@ public class TaskGenerator {
 		template.getPropertyFiles().forEach(path -> propertyFiles.add(Utils.getRelativeFile(yamlFile, path)));
 		variableResolver = new StringSubstitutor(new PropertiesLookup(propertyFiles));
 
-		template.getEpics().forEach(epic -> createEpic(epic));
-		template.getTasks().forEach(task -> createTask(task, null));
-	}
-
-	protected void initializeJiraClient() {
 		String jiraUrl = variableResolver.getStringLookup().lookup("JIRA_URL");
 		String jiraProject = variableResolver.getStringLookup().lookup("JIRA_PROJECT");
 		String jiraUsername = variableResolver.getStringLookup().lookup("JIRA_USERNAME");
@@ -60,6 +60,9 @@ public class TaskGenerator {
 
 		jira.setUrl(jiraUrl);
 		if (jiraPassword == null) {
+			if (jiraPasswordBase64 == null) {
+				throw new RuntimeException("Please specify a password");
+			}
 			jiraPassword = new String(Base64.getDecoder().decode(jiraPasswordBase64), Charset.forName("UTF-8"));
 		}
 		jira.setCredentials(jiraUsername, jiraPassword);
@@ -89,6 +92,7 @@ public class TaskGenerator {
 
 	private Map<String, String> fields(Task task) {
 		Map<String, String> fields = new HashMap<>();
+		fields.put("project", variableResolver.getStringLookup().lookup("JIRA_PROJECT"));
 		fields.put("summary", variableResolver.replace(task.getSummary()));
 		fields.put("assignee", variableResolver.replace(task.getAssignee()));
 		fields.put("fixVersion", variableResolver.replace(task.getFixVersion()));
