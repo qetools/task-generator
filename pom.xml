@@ -43,6 +43,12 @@
 			<artifactId>jira-client</artifactId>
 			<version>0.6.qetools-1</version>
 		</dependency>
+		<dependency>
+			<groupId>com.sparkjava</groupId>
+			<artifactId>spark-core</artifactId>
+			<version>2.7.2</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
