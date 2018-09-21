@@ -5,18 +5,18 @@ import java.util.List;
 
 public class Task {
 
-	private TaskType type;
+	private String issueType;
 	private String summary;
 	private String assignee;
 	private String fixVersion;
 	private List<Task> subtasks;
 
-	public TaskType getType() {
-		return type;
+	public String getIssueType() {
+		return issueType;
 	}
 
-	public void setType(TaskType type) {
-		this.type = type;
+	public void setIssueType(String issueType) {
+		this.issueType = issueType;
 	}
 
 	public String getSummary() {

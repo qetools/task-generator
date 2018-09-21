@@ -9,6 +9,7 @@ import org.qetools.task_generator.api.JiraClient;
 import org.qetools.task_generator.api.JiraIssue;
 
 import net.rcarz.jiraclient.BasicCredentials;
+import net.rcarz.jiraclient.Field;
 import net.rcarz.jiraclient.Issue;
 import net.rcarz.jiraclient.Issue.FluentCreate;
 import net.rcarz.jiraclient.Issue.SearchResult;
@@ -51,8 +52,9 @@ public class JiraClientRcarz implements JiraClient {
 		FluentCreate builder;
 		Issue issue;
 		try {
-			builder = jira.createIssue(fields.get("PROJECT"), fields.get("issueType"));
-			fields.forEach((key, value) -> builder.field(key, value));
+			builder = jira.createIssue(fields.get("project").toString(), fields.get("issuetype").toString());
+//			fields.forEach((key, value) -> builder.field(key, value));
+			builder.field(Field.SUMMARY, fields.get("summary"));
 			issue = builder.execute();
 		} catch (JiraException e) {
 			throw new RuntimeException("Error during creating an issue.", e);

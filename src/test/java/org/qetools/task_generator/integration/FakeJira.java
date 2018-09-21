@@ -4,8 +4,8 @@ import static java.nio.file.Files.readAllBytes;
 
 import java.net.URI;
 import java.nio.file.Paths;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.sf.json.JSONObject;
 import spark.Spark;
@@ -24,11 +24,11 @@ public class FakeJira {
 	}
 
 	private int index;
-	private Set<FakeJiraIssue> issues;
+	private List<FakeJiraIssue> issues;
 
 	public FakeJira() {
 		index = 1;
-		issues = new HashSet<>();
+		issues = new ArrayList<>();
 	}
 
 	public void start() {
@@ -50,12 +50,12 @@ public class FakeJira {
 			return JSONObject.fromObject(new FakeJiraResponse(issue));
 		});
 		Spark.post("/rest/api/latest/issue/", (req, res) -> {
-			System.out.println(req.body());
+			System.out.println("[POST] received" + req.body());
 			JSONObject jsonObj = JSONObject.fromObject(req.body());
 			String summary = getField(jsonObj, "summary");
 			String project = getField(jsonObj, "project.key");
 			FakeJiraIssue issue = add(project, summary);
-			System.out.println(JSONObject.fromObject(issue));
+			System.out.println("[POST] returned " + JSONObject.fromObject(issue));
 			return JSONObject.fromObject(issue);
 		});
 	}
@@ -77,6 +77,10 @@ public class FakeJira {
 		issue.setField("summary", summary);
 		issues.add(issue);
 		return issue;
+	}
+
+	public List<FakeJiraIssue> getAllIssues() {
+		return issues;
 	}
 
 	public FakeJiraIssue getById(String id) {

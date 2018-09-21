@@ -18,16 +18,19 @@ public class FakeJiraIssue {
 	}
 
 	public String getKey() {
-		return key;
+		return getField("key").toString();
 	}
 
 	public void setKey(String key) {
-		this.key = key;
+		setField("key", key);
 	}
 
-	
 	public void setField(String key, Object value) {
 		getFieldsMap().put(key, value);
+	}
+
+	public Object getField(String key) {
+		return getFieldsMap().get(key);
 	}
 
 	public Map<String, Object> getFields() {
@@ -37,7 +40,7 @@ public class FakeJiraIssue {
 	public void setFields(Map<String, Object> fields) {
 		this.fields = fields;
 	}
-	
+
 	private Map<String, Object> getFieldsMap() {
 		if (fields == null) {
 			fields = new HashMap<>();

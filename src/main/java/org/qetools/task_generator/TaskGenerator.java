@@ -70,6 +70,7 @@ public class TaskGenerator {
 	}
 
 	protected void createEpic(Epic epic) {
+		epic.setIssueType("Epic");
 		if (!jira.exists(withField("summary", epic.getSummary()))) {
 			jira.create(fields(epic));
 		}
@@ -78,6 +79,7 @@ public class TaskGenerator {
 	}
 
 	protected void createTask(Task task, Task epic) {
+		task.setIssueType("Task");
 		if (!jira.exists(withField("summary", task.getSummary()))) {
 			jira.create(fields(setMissingFields(task, epic)));
 		}
@@ -85,6 +87,7 @@ public class TaskGenerator {
 	}
 
 	protected void createSubtask(Task subtask, Task task) {
+		subtask.setIssueType("Sub-task");
 		if (!jira.exists(withField("summary", subtask.getSummary()))) {
 			jira.create(fields(setMissingFields(subtask, task)));
 		}
@@ -92,6 +95,7 @@ public class TaskGenerator {
 
 	protected Map<String, String> fields(Task task) {
 		Map<String, String> fields = new HashMap<>();
+		fields.put("issuetype", variableResolver.replace(task.getIssueType()));
 		fields.put("project", variableResolver.getStringLookup().lookup("JIRA_PROJECT"));
 		fields.put("summary", variableResolver.replace(task.getSummary()));
 		fields.put("assignee", variableResolver.replace(task.getAssignee()));
