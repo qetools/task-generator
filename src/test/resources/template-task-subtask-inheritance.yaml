@@ -1,0 +1,11 @@
+tasks:
+- summary: Task 1
+  assignee: user1
+  fixVersion: 1.0
+  subtasks:
+    - summary: Subtask 11
+      assignee: user11
+      fixVersion: 2.0
+    - summary: Subtask 12
+      assignee: user12
+    - summary: Subtask 13

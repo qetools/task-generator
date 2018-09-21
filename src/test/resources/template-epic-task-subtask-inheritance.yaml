@@ -1,0 +1,32 @@
+epics:
+- summary: Epic 1
+  assignee: user1
+  fixVersion: 1.0
+  tasks:
+    - summary: Task 11
+      assignee: user11
+      fixVersion: 1.1
+      subtasks:
+        - summary: Subtask 111
+          assignee: user111
+          fixVersion: 1.1.1
+        - summary: Subtask 112
+          assignee: user112
+        - summary: Subtask 113
+    - summary: Task 12
+      assignee: user12
+      subtasks:
+        - summary: Subtask 121
+          assignee: user121
+          fixVersion: 1.1.2
+        - summary: Subtask 122
+          assignee: user122
+        - summary: Subtask 123
+    - summary: Task 13
+      subtasks:
+        - summary: Subtask 131
+          assignee: user131
+          fixVersion: 1.1.3
+        - summary: Subtask 132
+          assignee: user132
+        - summary: Subtask 133

@@ -289,11 +289,63 @@ public class TaskGeneratorTest {
 		assertIssue(0, PROJECT + "-1", "Epic 1");
 	}
 
+	@Test
+	public void testGeneratingEpicAndTaskWithInheritance() throws Exception {
+		File yamlFile = getFile("template-epic-task-inheritance.yaml");
+		getTaskGenerator().generate(yamlFile);
+		collector.checkThat(jira.getAllIssues().size(), equalTo(4));
+		assertIssue(0, PROJECT + "-1", "Epic 1", "user1", "1.0");
+		assertIssue(1, PROJECT + "-2", "Task 11", "user11", "2.0");
+		assertIssue(2, PROJECT + "-3", "Task 12", "user12", "1.0");
+		assertIssue(3, PROJECT + "-4", "Task 13", "user1", "1.0");
+	}
+
+	@Test
+	public void testGeneratingEpicAndTaskAndSubtaskWithInheritance() throws Exception {
+		File yamlFile = getFile("template-epic-task-subtask-inheritance.yaml");
+		getTaskGenerator().generate(yamlFile);
+		collector.checkThat(jira.getAllIssues().size(), equalTo(13));
+		assertIssue(0, PROJECT + "-1", "Epic 1", "user1", "1.0");
+		assertIssue(1, PROJECT + "-2", "Task 11", "user11", "1.1");
+		assertIssue(2, PROJECT + "-3", "Subtask 111", "user111", "1.1.1");
+		assertIssue(3, PROJECT + "-4", "Subtask 112", "user112", "1.1");
+		assertIssue(4, PROJECT + "-5", "Subtask 113", "user11", "1.1");
+		assertIssue(5, PROJECT + "-6", "Task 12", "user12", "1.0");
+		assertIssue(6, PROJECT + "-7", "Subtask 121", "user121", "1.1.2");
+		assertIssue(7, PROJECT + "-8", "Subtask 122", "user122", "1.0");
+		assertIssue(8, PROJECT + "-9", "Subtask 123", "user12", "1.0");
+		assertIssue(9, PROJECT + "-10", "Task 13", "user1", "1.0");
+		assertIssue(10, PROJECT + "-11", "Subtask 131", "user131", "1.1.3");
+		assertIssue(11, PROJECT + "-12", "Subtask 132", "user132", "1.0");
+		assertIssue(12, PROJECT + "-13", "Subtask 133", "user1", "1.0");
+	}
+
+	@Test
+	public void testGeneratingTaskAndSubtaskWithInheritance() throws Exception {
+		File yamlFile = getFile("template-task-subtask-inheritance.yaml");
+		getTaskGenerator().generate(yamlFile);
+		collector.checkThat(jira.getAllIssues().size(), equalTo(4));
+		assertIssue(0, PROJECT + "-1", "Task 1", "user1", "1.0");
+		assertIssue(1, PROJECT + "-2", "Subtask 11", "user11", "2.0");
+		assertIssue(2, PROJECT + "-3", "Subtask 12", "user12", "1.0");
+		assertIssue(3, PROJECT + "-4", "Subtask 13", "user1", "1.0");
+	}
+
 	private void assertIssue(int index, String expectedKey, String expectedSummary) {
 		collector.checkThat("Cannot find issue with key '" + expectedKey + "'",
 				jira.exists(withField("key", expectedKey)), is(true));
 		collector.checkThat(jira.getAllIssues().get(index).getField("key"), equalTo(expectedKey));
 		collector.checkThat(jira.getAllIssues().get(index).getField("summary"), equalTo(expectedSummary));
+	}
+
+	private void assertIssue(int index, String expectedKey, String expectedSummary, String expectedAssignee,
+			String expectedVersion) {
+		collector.checkThat("Cannot find issue with key '" + expectedKey + "'",
+				jira.exists(withField("key", expectedKey)), is(true));
+		collector.checkThat(jira.getAllIssues().get(index).getField("key"), equalTo(expectedKey));
+		collector.checkThat(jira.getAllIssues().get(index).getField("summary"), equalTo(expectedSummary));
+		collector.checkThat(jira.getAllIssues().get(index).getField("assignee"), equalTo(expectedAssignee));
+		collector.checkThat(jira.getAllIssues().get(index).getField("fixVersion"), equalTo(expectedVersion));
 	}
 
 	private File getFile(String fileName) {

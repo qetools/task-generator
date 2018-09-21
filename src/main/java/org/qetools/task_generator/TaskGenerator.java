@@ -79,24 +79,37 @@ public class TaskGenerator {
 
 	protected void createTask(Task task, Task epic) {
 		if (!jira.exists(withField("summary", task.getSummary()))) {
-			jira.create(fields(task));
+			jira.create(fields(setMissingFields(task, epic)));
 		}
 		task.getSubtasks().forEach(subtask -> createSubtask(subtask, task));
 	}
 
 	protected void createSubtask(Task subtask, Task task) {
 		if (!jira.exists(withField("summary", subtask.getSummary()))) {
-			jira.create(fields(subtask));
+			jira.create(fields(setMissingFields(subtask, task)));
 		}
 	}
 
-	private Map<String, String> fields(Task task) {
+	protected Map<String, String> fields(Task task) {
 		Map<String, String> fields = new HashMap<>();
 		fields.put("project", variableResolver.getStringLookup().lookup("JIRA_PROJECT"));
 		fields.put("summary", variableResolver.replace(task.getSummary()));
 		fields.put("assignee", variableResolver.replace(task.getAssignee()));
 		fields.put("fixVersion", variableResolver.replace(task.getFixVersion()));
 		return fields;
+	}
+
+	protected Task setMissingFields(Task child, Task parent) {
+		if (parent == null) {
+			return child;
+		}
+		if (child.getAssignee() == null) {
+			child.setAssignee(parent.getAssignee());
+		}
+		if (child.getFixVersion() == null) {
+			child.setFixVersion(parent.getFixVersion());
+		}
+		return child;
 	}
 
 	private static Template loadYamlFile(File yamlFile) {
