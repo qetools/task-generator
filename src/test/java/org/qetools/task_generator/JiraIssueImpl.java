@@ -1,4 +1,4 @@
-package org.qetools.task_generator.impl;
+package org.qetools.task_generator;
 
 import java.util.Collections;
 import java.util.HashMap;

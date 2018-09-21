@@ -13,7 +13,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ErrorCollector;
-import org.qetools.task_generator.impl.JiraClientImpl;
 
 public class TaskGeneratorTest {
 
@@ -35,6 +34,7 @@ public class TaskGeneratorTest {
 		System.getProperties().remove("taskNumber1");
 		System.getProperties().remove("subtaskNumber1");
 		System.getProperties().remove("subtaskNumber2");
+		System.getProperties().remove("customFileName");
 	}
 
 	@Test
@@ -227,6 +227,14 @@ public class TaskGeneratorTest {
 	}
 
 	@Test
+	public void testGeneratingWithEnvSubstitution() throws Exception {
+		File yamlFile = getFile("template-substitution-env.yaml");
+		getTaskGenerator().generate(yamlFile);
+		collector.checkThat(jira.getAllIssues().size(), equalTo(1));
+		assertIssue(0, PROJECT + "-1", "Epic 1", System.getProperty("user.name"), "1.0");
+	}
+
+	@Test
 	public void testGeneratingWithMissingSubstitution() throws Exception {
 		System.setProperty("epicNumber1", "1");
 		System.setProperty("subtaskNumber1", "111");
@@ -245,6 +253,20 @@ public class TaskGeneratorTest {
 		System.setProperty("subtaskNumber1", "111");
 		System.setProperty("subtaskNumber2", "112");
 		File yamlFile = getFile("template-substitution-propertyFile.yaml");
+		getTaskGenerator().generate(yamlFile);
+		collector.checkThat(jira.getAllIssues().size(), equalTo(4));
+		assertIssue(0, PROJECT + "-1", "Epic 01");
+		assertIssue(1, PROJECT + "-2", "Task 01");
+		assertIssue(2, PROJECT + "-3", "Subtask 111");
+		assertIssue(3, PROJECT + "-4", "Subtask 112");
+	}
+	
+	@Test
+	public void testGeneratingWithSubstitutionInPropertyFileDefinedByVariable() throws Exception {
+		System.setProperty("subtaskNumber1", "111");
+		System.setProperty("subtaskNumber2", "112");
+		System.setProperty("customFileName", "custom1");
+		File yamlFile = getFile("template-substitution-propertyFile-var.yaml");
 		getTaskGenerator().generate(yamlFile);
 		collector.checkThat(jira.getAllIssues().size(), equalTo(4));
 		assertIssue(0, PROJECT + "-1", "Epic 01");

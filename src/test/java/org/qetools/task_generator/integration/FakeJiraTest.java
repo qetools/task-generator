@@ -44,6 +44,16 @@ public class FakeJiraTest {
 	}
 
 	@Test
+	public void testCreatingSubtaskIssue() throws Exception {
+		JiraClient jira = new JiraClient("http://localhost:4567/", null);
+
+		Issue task = jira.createIssue("TEST", "Sub-task").field(Field.SUMMARY, "Subtask A").field(Field.ASSIGNEE, "apodhrad").field(Field.PARENT, "Task A").execute();
+		Assert.assertEquals(task.getId(), "1");
+		Assert.assertEquals(task.getKey(), "TEST-1");
+		Assert.assertEquals(task.getSummary(), "Subtask A");
+	}
+
+	@Test
 	public void testCreatingTaskIssue() throws Exception {
 		JiraClient jira = new JiraClient("http://localhost:4567/", null);
 
@@ -51,6 +61,16 @@ public class FakeJiraTest {
 		Assert.assertEquals(task.getId(), "1");
 		Assert.assertEquals(task.getKey(), "TEST-1");
 		Assert.assertEquals(task.getSummary(), "Task A");
+	}
+
+	@Test
+	public void testCreatingEpicIssue() throws Exception {
+		JiraClient jira = new JiraClient("http://localhost:4567/", null);
+
+		Issue task = jira.createIssue("TEST", "Epic").field(Field.SUMMARY, "Epic A").field(Field.ASSIGNEE, "apodhrad").execute();
+		Assert.assertEquals(task.getId(), "1");
+		Assert.assertEquals(task.getKey(), "TEST-1");
+		Assert.assertEquals(task.getSummary(), "Epic A");
 	}
 
 }

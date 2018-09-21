@@ -1,8 +1,9 @@
 package org.qetools.task_generator.integration;
 
 import static java.nio.file.Files.readAllBytes;
-import static java.nio.file.Paths.get;
 
+import java.net.URI;
+import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -32,7 +33,9 @@ public class FakeJira {
 
 	public void start() {
 		Spark.get("/rest/api/latest/issue/createmeta", (req, res) -> {
-			byte[] meta = readAllBytes(get(getClass().getClassLoader().getResource("createmeta_task.json").toURI()));
+			String issueType = req.queryParams("issuetypeNames").toLowerCase();
+			URI resourceURI = getClass().getClassLoader().getResource("createmeta_" + issueType + ".json").toURI();
+			byte[] meta = readAllBytes(Paths.get(resourceURI));
 			return new String(meta);
 		});
 		Spark.get("/rest/api/latest/issue/:key", (req, res) -> {
