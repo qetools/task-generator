@@ -3,14 +3,18 @@ package org.qetools.task_generator.integration;
 import static java.nio.file.Files.readAllBytes;
 
 import java.net.URI;
+import java.nio.charset.Charset;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
 import org.qetools.task_generator.Utils;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import spark.Request;
 import spark.Spark;
 
 public class FakeJira {
@@ -21,39 +25,52 @@ public class FakeJira {
 
 	public static FakeJira getInstance() {
 		if (instance == null) {
-			instance = new FakeJira();
+			instance = new FakeJira("bot", "admin123");
 		}
 		return instance;
 	}
 
 	private int index;
 	private List<FakeJiraIssue> issues;
+	private String credentials;
 
 	public FakeJira() {
 		index = 1;
 		issues = new ArrayList<>();
 	}
 
-	public void start() {
-		Spark.init();
-		Spark.awaitInitialization();
-		try {
-			Thread.sleep(5*1000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	public FakeJira(String username, String password) {
+		index = 1;
+		issues = new ArrayList<>();
+		if (username == null ^ password == null) {
+			throw new IllegalArgumentException("Please specify correct credentials");
 		}
+		if (username != null && password != null) {
+			credentials = username + ":" + password;
+		}
+	}
+
+	public void start() {
 		Spark.get("/rest/api/latest/issue/createmeta", (req, res) -> {
+			if (!checkCredentials(req)) {
+				return "Bad authentication";
+			}
 			String issueType = req.queryParams("issuetypeNames").toLowerCase();
 			URI resourceURI = getClass().getClassLoader().getResource("createmeta_" + issueType + ".json").toURI();
 			byte[] meta = readAllBytes(Paths.get(resourceURI));
 			return new String(meta);
 		});
 		Spark.get("/rest/api/latest/issue/:key", (req, res) -> {
+			if (!checkCredentials(req)) {
+				return "Bad authentication";
+			}
 			String key = req.params(":key");
 			return JSONObject.fromObject(getByKey(key));
 		});
 		Spark.get("/rest/api/latest/search", (req, res) -> {
+			if (!checkCredentials(req)) {
+				return "Bad authentication";
+			}
 			Map<String, String> map = Utils.parseQuery(req.queryParams("jql"));
 			for (FakeJiraIssue issue : issues) {
 				boolean result = true;
@@ -70,12 +87,23 @@ public class FakeJira {
 			return JSONObject.fromObject(new FakeJiraResponse());
 		});
 		Spark.post("/rest/api/latest/issue/", (req, res) -> {
+			if (!checkCredentials(req)) {
+				return "Bad authentication";
+			}
 			JSONObject jsonObj = JSONObject.fromObject(req.body());
 			String summary = getField(jsonObj, "summary");
 			String project = getField(jsonObj, "project.key");
+			String issueType = getField(jsonObj, "issuetype.name");
+			String assignee = getField(jsonObj, "assignee.name");
+			String fixVersion = getField(jsonObj, "fixVersions.name");
 			FakeJiraIssue issue = add(project, summary);
+			issue.setField("issueType", issueType);
+			issue.setField("assignee", assignee);
+			issue.setField("fixVersion", fixVersion);
 			return JSONObject.fromObject(issue);
 		});
+		Spark.init();
+		Spark.awaitInitialization();
 	}
 
 	public void stop() {
@@ -109,6 +137,23 @@ public class FakeJira {
 		return issues.stream().filter(issue -> issue.getKey().equals(key)).findFirst().get();
 	}
 
+	protected boolean checkCredentials(Request req) {
+		if (credentials == null) {
+			return true;
+		}
+		String authHeader = req.headers("Authorization");
+		if (authHeader != null) {
+			if (!authHeader.contains("Basic")) {
+				return false;
+			}
+			String decodedCredentials = new String(
+					Base64.getDecoder().decode(authHeader.substring("Basic".length()).trim()),
+					Charset.forName("UTF-8"));
+			return credentials.equals(decodedCredentials);
+		}
+		return false;
+	}
+
 	private static String getField(JSONObject jsonObj, String path) {
 		JSONObject fields = jsonObj.getJSONObject("fields");
 		jsonObj = fields;
@@ -122,6 +167,12 @@ public class FakeJira {
 			}
 			if (obj instanceof JSONObject) {
 				jsonObj = (JSONObject) obj;
+			} else if (obj instanceof JSONArray) {
+				JSONArray jsonArray = (JSONArray) obj;
+				if (jsonArray.isEmpty()) {
+					return null;
+				}
+				jsonObj = (JSONObject) ((JSONArray) obj).get(0);
 			} else {
 				throw new RuntimeException("Unknown object " + obj);
 			}

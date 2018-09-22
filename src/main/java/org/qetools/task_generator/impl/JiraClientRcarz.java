@@ -48,13 +48,19 @@ public class JiraClientRcarz implements JiraClient {
 
 	@Override
 	public JiraIssue create(Map<String, String> fields) {
-		System.out.println("Creating new task with fields " + fields.toString());
 		FluentCreate builder;
 		Issue issue;
 		try {
 			builder = jira.createIssue(fields.get("project").toString(), fields.get("issuetype").toString());
-//			fields.forEach((key, value) -> builder.field(key, value));
-			builder.field(Field.SUMMARY, fields.get("summary"));
+			if (fields.get("summary") != null) {
+				builder.field(Field.SUMMARY, fields.get("summary"));
+			}
+			if (fields.get("assignee") != null) {
+				builder.field(Field.ASSIGNEE, fields.get("assignee"));
+			}
+			if (fields.get("fixVersion") != null) {
+				builder.field(Field.FIX_VERSIONS, list(fields.get("fixVersion")));
+			}
 			issue = builder.execute();
 		} catch (JiraException e) {
 			throw new RuntimeException("Error during creating an issue.", e);
@@ -84,11 +90,12 @@ public class JiraClientRcarz implements JiraClient {
 		}
 		return jiraIssues;
 	}
+
 	@Override
 	public boolean exists(String summary) {
 		return exists("MYPROJECT", "Task", summary);
 	}
-	
+
 	public boolean exists(String project, String issueType, String summary) {
 		return search("project = \"" + project + "\" AND issuetype = \"" + issueType + "\" AND summary ~ \"\\\""
 				+ summary + "\\\"\"").isEmpty();
@@ -97,5 +104,13 @@ public class JiraClientRcarz implements JiraClient {
 	@Override
 	public boolean exists(JiraQuery jiraQuery) {
 		return !search(jiraQuery.getJiraQueryString()).isEmpty();
+	}
+
+	private static List<String> list(String... strings) {
+		List<String> list = new ArrayList<>();
+		for (String string : strings) {
+			list.add(string);
+		}
+		return list;
 	}
 }

@@ -52,7 +52,7 @@ public class TaskGeneratorIT {
 		File yamlFile = getFile("template-epic.yaml");
 		getTaskGenerator().generate(yamlFile);
 		collector.checkThat(jira.getAllIssues().size(), equalTo(1));
-		assertIssue(0, PROJECT + "-1", "Epic 1");
+		assertIssue(0, PROJECT + "-1", "Epic 1", "user1", "1.0");
 	}
 
 	@Test
