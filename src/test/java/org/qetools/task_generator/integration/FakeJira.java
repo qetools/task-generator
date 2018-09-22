@@ -6,6 +6,9 @@ import java.net.URI;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import org.qetools.task_generator.Utils;
 
 import net.sf.json.JSONObject;
 import spark.Spark;
@@ -32,6 +35,14 @@ public class FakeJira {
 	}
 
 	public void start() {
+		Spark.init();
+		Spark.awaitInitialization();
+		try {
+			Thread.sleep(5*1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Spark.get("/rest/api/latest/issue/createmeta", (req, res) -> {
 			String issueType = req.queryParams("issuetypeNames").toLowerCase();
 			URI resourceURI = getClass().getClassLoader().getResource("createmeta_" + issueType + ".json").toURI();
@@ -43,19 +54,26 @@ public class FakeJira {
 			return JSONObject.fromObject(getByKey(key));
 		});
 		Spark.get("/rest/api/latest/search", (req, res) -> {
-			System.out.println(req.toString());
-			System.out.println(req.queryParams("jql"));
-			FakeJiraIssue issue = new FakeJiraIssue();
-			issue.setKey("FOOTEST-2");
-			return JSONObject.fromObject(new FakeJiraResponse(issue));
+			Map<String, String> map = Utils.parseQuery(req.queryParams("jql"));
+			for (FakeJiraIssue issue : issues) {
+				boolean result = true;
+				for (String key : map.keySet()) {
+					if (!map.get(key).equals(issue.getField(key))) {
+						result = false;
+						break;
+					}
+				}
+				if (result) {
+					return JSONObject.fromObject(new FakeJiraResponse(issue));
+				}
+			}
+			return JSONObject.fromObject(new FakeJiraResponse());
 		});
 		Spark.post("/rest/api/latest/issue/", (req, res) -> {
-			System.out.println("[POST] received" + req.body());
 			JSONObject jsonObj = JSONObject.fromObject(req.body());
 			String summary = getField(jsonObj, "summary");
 			String project = getField(jsonObj, "project.key");
 			FakeJiraIssue issue = add(project, summary);
-			System.out.println("[POST] returned " + JSONObject.fromObject(issue));
 			return JSONObject.fromObject(issue);
 		});
 	}

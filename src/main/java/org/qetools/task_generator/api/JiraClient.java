@@ -3,8 +3,6 @@ package org.qetools.task_generator.api;
 import java.util.List;
 import java.util.Map;
 
-import org.hamcrest.Matcher;
-
 public interface JiraClient {
 
 	void setUrl(String url);
@@ -21,6 +19,6 @@ public interface JiraClient {
 
 	boolean exists(String summary);
 
-	boolean exists(Matcher<JiraIssue> matcher);
+	boolean exists(JiraQuery jiraQuery);
 
 }

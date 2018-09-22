@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.hamcrest.Matcher;
 import org.qetools.task_generator.api.JiraClient;
 import org.qetools.task_generator.api.JiraIssue;
+import org.qetools.task_generator.api.JiraQuery;
 
 import net.rcarz.jiraclient.BasicCredentials;
 import net.rcarz.jiraclient.Field;
@@ -84,16 +84,18 @@ public class JiraClientRcarz implements JiraClient {
 		}
 		return jiraIssues;
 	}
-
 	@Override
 	public boolean exists(String summary) {
-		// TODO Auto-generated method stub
-		return false;
+		return exists("MYPROJECT", "Task", summary);
+	}
+	
+	public boolean exists(String project, String issueType, String summary) {
+		return search("project = \"" + project + "\" AND issuetype = \"" + issueType + "\" AND summary ~ \"\\\""
+				+ summary + "\\\"\"").isEmpty();
 	}
 
 	@Override
-	public boolean exists(Matcher<JiraIssue> matcher) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean exists(JiraQuery jiraQuery) {
+		return !search(jiraQuery.getJiraQueryString()).isEmpty();
 	}
 }

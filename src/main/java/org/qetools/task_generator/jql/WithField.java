@@ -3,8 +3,9 @@ package org.qetools.task_generator.jql;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.qetools.task_generator.api.JiraIssue;
+import org.qetools.task_generator.api.JiraQuery;
 
-public class WithField extends BaseMatcher<JiraIssue> {
+public class WithField extends BaseMatcher<JiraIssue> implements JiraQuery {
 
 	private String key;
 	private String value;
@@ -29,6 +30,11 @@ public class WithField extends BaseMatcher<JiraIssue> {
 
 	@Override
 	public void describeTo(Description description) {
+	}
+
+	@Override
+	public String getJiraQueryString() {
+		return key + " = \"" + value + "\"";
 	}
 
 }

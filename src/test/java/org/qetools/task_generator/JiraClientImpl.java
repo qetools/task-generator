@@ -8,6 +8,7 @@ import java.util.Map;
 import org.hamcrest.Matcher;
 import org.qetools.task_generator.api.JiraClient;
 import org.qetools.task_generator.api.JiraIssue;
+import org.qetools.task_generator.api.JiraQuery;
 
 public class JiraClientImpl implements JiraClient {
 
@@ -71,11 +72,11 @@ public class JiraClientImpl implements JiraClient {
 	}
 
 	@Override
-	public boolean exists(Matcher<JiraIssue> matcher) {
-		if (matcher == null) {
-			throw new IllegalArgumentException("Summary cannot be null");
+	public boolean exists(JiraQuery jiraQuery) {
+		if (jiraQuery == null) {
+			throw new IllegalArgumentException("Query cannot be null");
 		}
-		return issues.stream().anyMatch(issue -> matcher.matches(issue));
+		return issues.stream().anyMatch(issue -> jiraQuery.matches(issue));
 	}
 
 }
