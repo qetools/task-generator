@@ -1,6 +1,5 @@
 package org.qetools.task_generator.api;
 
-import java.util.List;
 import java.util.Map;
 
 public interface JiraClient {
@@ -12,10 +11,6 @@ public interface JiraClient {
 	void initialize();
 
 	JiraIssue create(Map<String, String> fields);
-
-	JiraIssue create(JiraIssue issue);
-
-	List<JiraIssue> search(String jql);
 
 	boolean exists(String summary);
 

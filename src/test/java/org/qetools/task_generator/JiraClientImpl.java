@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.hamcrest.Matcher;
 import org.qetools.task_generator.api.JiraClient;
 import org.qetools.task_generator.api.JiraIssue;
 import org.qetools.task_generator.api.JiraQuery;
@@ -44,19 +43,6 @@ public class JiraClientImpl implements JiraClient {
 		issue.setField("key", fields.get("project") + "-" + index++);
 		issues.add(issue);
 		return issue;
-	}
-
-	@Override
-	public JiraIssue create(JiraIssue issue) {
-		issue.setField("key", issue.getField("project") + "-" + index++);
-		issues.add(issue);
-		return issue;
-	}
-
-	@Override
-	public List<JiraIssue> search(String jql) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	public List<JiraIssue> getAllIssues() {

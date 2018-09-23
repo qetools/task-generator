@@ -68,12 +68,6 @@ public class JiraClientRcarz implements JiraClient {
 		return new JiraIssueRcarz(issue);
 	}
 
-	@Override
-	public JiraIssue create(JiraIssue issue) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public List<JiraIssue> search(String jql) {
 		List<JiraIssue> jiraIssues = new ArrayList<>();
 		SearchResult searchResult = null;
