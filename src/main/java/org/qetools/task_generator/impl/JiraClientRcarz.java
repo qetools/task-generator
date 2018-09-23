@@ -61,6 +61,12 @@ public class JiraClientRcarz implements JiraClient {
 			if (fields.get("fixVersion") != null) {
 				builder.field(Field.FIX_VERSIONS, list(fields.get("fixVersion")));
 			}
+			if (fields.get("epic") != null) {
+				builder.field("customfield_12311140", fields.get("epic"));
+			}
+			if (fields.get("parent") != null) {
+				builder.field(Field.PARENT, fields.get("parent"));
+			}
 			issue = builder.execute();
 		} catch (JiraException e) {
 			throw new RuntimeException("Error during creating an issue.", e);

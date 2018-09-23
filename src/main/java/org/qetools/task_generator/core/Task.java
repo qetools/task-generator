@@ -5,6 +5,7 @@ import java.util.List;
 
 public class Task {
 
+	private String key;
 	private String issueType;
 	private String summary;
 	private String assignee;
@@ -12,6 +13,14 @@ public class Task {
 	private List<Task> subtasks;
 	private Epic epic;
 	private Task parent;
+
+	public String getKey() {
+		return key;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
+	}
 
 	public String getIssueType() {
 		return issueType;

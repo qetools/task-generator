@@ -206,6 +206,19 @@ public class TaskGeneratorTest extends AbstractTaskGeneratorTest {
 	}
 
 	@Override
+	protected void assertIssue(int index, String expectedKey, String expectedIssueType, String expectedSummary,
+			String expectedAssignee, String expectedVersion,String expectedEpic, String expectedParent) {
+		collector.checkThat("Cannot find issue with key '" + expectedKey + "'",
+				jira.exists(withField("key", expectedKey)), is(true));
+		collector.checkThat(jira.getAllIssues().get(index).getField("key"), equalTo(expectedKey));
+		collector.checkThat(jira.getAllIssues().get(index).getField("summary"), equalTo(expectedSummary));
+		collector.checkThat(jira.getAllIssues().get(index).getField("assignee"), equalTo(expectedAssignee));
+		collector.checkThat(jira.getAllIssues().get(index).getField("fixVersion"), equalTo(expectedVersion));
+		collector.checkThat(jira.getAllIssues().get(index).getField("epic"), equalTo(expectedEpic));
+		collector.checkThat(jira.getAllIssues().get(index).getField("parent"), equalTo(expectedParent));
+	}
+
+	@Override
 	protected TaskGenerator getTaskGenerator() throws IOException {
 		return getTaskGenerator("jira1.properties");
 	}

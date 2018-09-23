@@ -16,6 +16,7 @@ import java.util.Map;
 
 import org.apache.commons.text.StringSubstitutor;
 import org.qetools.task_generator.api.JiraClient;
+import org.qetools.task_generator.api.JiraIssue;
 import org.qetools.task_generator.core.Epic;
 import org.qetools.task_generator.core.Task;
 import org.yaml.snakeyaml.Yaml;
@@ -71,7 +72,8 @@ public class TaskGenerator {
 	protected void createEpic(Epic epic) {
 		epic.setIssueType("Epic");
 		if (!jira.exists(withField("summary", epic.getSummary()))) {
-			jira.create(fields(epic));
+			JiraIssue createdIssue = jira.create(fields(epic));
+			epic.setKey(createdIssue.getField("key"));
 		}
 		epic.getTasks().forEach(task -> createTask(task, epic));
 		epic.getSubtasks().forEach(subtask -> createSubtask(subtask, epic));
@@ -81,18 +83,15 @@ public class TaskGenerator {
 		task.setIssueType("Task");
 		task.setEpic(epic);
 		if (!jira.exists(withField("summary", task.getSummary()))) {
-			jira.create(fields(setMissingFields(task, epic)));
+			JiraIssue createdIssue = jira.create(fields(setMissingFields(task, epic)));
+			task.setKey(createdIssue.getField("key"));
 		}
 		task.getSubtasks().forEach(subtask -> createSubtask(subtask, task));
 	}
 
 	protected void createSubtask(Task subtask, Task task) {
 		subtask.setIssueType("Sub-task");
-		if (task instanceof Epic) {
-			subtask.setEpic((Epic) task);
-		} else {
-			subtask.setParent(task);
-		}
+		subtask.setParent(task);
 		if (!jira.exists(withField("summary", subtask.getSummary()))) {
 			jira.create(fields(setMissingFields(subtask, task)));
 		}
@@ -105,6 +104,12 @@ public class TaskGenerator {
 		fields.put("summary", variableResolver.replace(task.getSummary()));
 		fields.put("assignee", variableResolver.replace(task.getAssignee()));
 		fields.put("fixVersion", variableResolver.replace(task.getFixVersion()));
+		if (task.getEpic() != null) {
+			fields.put("epic", variableResolver.replace(task.getEpic().getKey()));
+		}
+		if (task.getParent() != null) {
+			fields.put("parent", variableResolver.replace(task.getParent().getKey()));
+		}
 		return fields;
 	}
 
