@@ -77,8 +77,9 @@ public class TaskGenerator {
 		epic.getSubtasks().forEach(subtask -> createSubtask(subtask, epic));
 	}
 
-	protected void createTask(Task task, Task epic) {
+	protected void createTask(Task task, Epic epic) {
 		task.setIssueType("Task");
+		task.setEpic(epic);
 		if (!jira.exists(withField("summary", task.getSummary()))) {
 			jira.create(fields(setMissingFields(task, epic)));
 		}
@@ -87,6 +88,11 @@ public class TaskGenerator {
 
 	protected void createSubtask(Task subtask, Task task) {
 		subtask.setIssueType("Sub-task");
+		if (task instanceof Epic) {
+			subtask.setEpic((Epic) task);
+		} else {
+			subtask.setParent(task);
+		}
 		if (!jira.exists(withField("summary", subtask.getSummary()))) {
 			jira.create(fields(setMissingFields(subtask, task)));
 		}

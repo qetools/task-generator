@@ -10,6 +10,8 @@ public class Task {
 	private String assignee;
 	private String fixVersion;
 	private List<Task> subtasks;
+	private Epic epic;
+	private Task parent;
 
 	public String getIssueType() {
 		return issueType;
@@ -49,6 +51,22 @@ public class Task {
 
 	public void setSubtasks(List<Task> subtasks) {
 		this.subtasks = subtasks;
+	}
+
+	public Epic getEpic() {
+		return epic;
+	}
+
+	public void setEpic(Epic epic) {
+		this.epic = epic;
+	}
+
+	public Task getParent() {
+		return parent;
+	}
+
+	public void setParent(Task parent) {
+		this.parent = parent;
 	}
 
 }
