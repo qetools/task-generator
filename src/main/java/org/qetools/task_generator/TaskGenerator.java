@@ -53,7 +53,6 @@ public class TaskGenerator {
 		variableResolver = new StringSubstitutor(new PropertiesLookup(propertyFiles));
 
 		String jiraUrl = variableResolver.getStringLookup().lookup("JIRA_URL");
-		String jiraProject = variableResolver.getStringLookup().lookup("JIRA_PROJECT");
 		String jiraUsername = variableResolver.getStringLookup().lookup("JIRA_USERNAME");
 		String jiraPassword = variableResolver.getStringLookup().lookup("JIRA_PASSWORD");
 		String jiraPasswordBase64 = variableResolver.getStringLookup().lookup("JIRA_PASSWORD_BASE64");

@@ -97,7 +97,7 @@ public class FakeJira {
 			String assignee = getField(jsonObj, "assignee.name");
 			String fixVersion = getField(jsonObj, "fixVersions.name");
 			FakeJiraIssue issue = add(project, summary);
-			issue.setField("issueType", issueType);
+			issue.setField("issuetype", issueType);
 			issue.setField("assignee", assignee);
 			issue.setField("fixVersion", fixVersion);
 			return JSONObject.fromObject(issue);
