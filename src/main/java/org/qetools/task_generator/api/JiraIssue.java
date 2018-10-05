@@ -23,6 +23,12 @@ package org.qetools.task_generator.api;
 
 import java.util.Map;
 
+/**
+ * Jira Issue API.
+ * 
+ * @author Andrej Podhradsky
+ *
+ */
 public interface JiraIssue {
 
 	void setField(String key, String value);

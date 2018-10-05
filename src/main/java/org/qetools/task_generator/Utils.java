@@ -32,18 +32,42 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.text.StringSubstitutor;
 
+/**
+ * 
+ * @author Andrej Podhradsky
+ *
+ */
 public class Utils {
 
-	public static File getRelativeFile(File file, String path) {
+	/**
+	 * Returns a file which is computed from a parent file and a relative path. The
+	 * path can also an absolute path.
+	 * 
+	 * @param parentfile Parent file
+	 * @param path       Path
+	 * @return File
+	 */
+	public static File getRelativeFile(File parentfile, String path) {
 		StringSubstitutor defaultResolver = new StringSubstitutor(INSTANCE.systemPropertyStringLookup());
 		path = defaultResolver.replace(path);
 		if (Paths.get(path).isAbsolute()) {
 			return new File(path);
 		}
-		File parent = file.isFile() ? file.getParentFile() : file;
+		File parent = parentfile.isFile() ? parentfile.getParentFile() : parentfile;
 		return new File(parent, path);
 	}
 
+	/**
+	 * Maps keys and values from a query. At the moment, only logical conjunctions
+	 * are supported. For example:
+	 * 
+	 * <pre>
+	 * key1 = value AND key2 = value2
+	 * </pre>
+	 * 
+	 * @param query
+	 * @return Map of keys and values
+	 */
 	public static Map<String, String> parseQuery(String query) {
 		Map<String, String> map = new HashMap<>();
 		String keyValueRegex = "(\\w+)\\s*=\\s*\"([^(AND)]+)\"";

@@ -24,6 +24,12 @@ package org.qetools.task_generator.core;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Task or subtask. Tasks can be linked to an epic. Tasks can contain subtasks.
+ * 
+ * @author Andrej Podhradsky
+ *
+ */
 public class Task {
 
 	private String key;

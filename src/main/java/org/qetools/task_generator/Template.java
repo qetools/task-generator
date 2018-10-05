@@ -28,6 +28,12 @@ import java.util.Properties;
 import org.qetools.task_generator.core.Epic;
 import org.qetools.task_generator.core.Task;
 
+/**
+ * A template which is consumed by the task generator.
+ * 
+ * @author Andrej Podhradsky
+ *
+ */
 public class Template {
 
 	private Properties properties;

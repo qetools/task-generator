@@ -24,6 +24,13 @@ package org.qetools.task_generator.core;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Epic is a special case of Task. Epic can link none or more tasks or it can
+ * contain subtasks.
+ * 
+ * @author Andrej Podhradsky
+ *
+ */
 public class Epic extends Task {
 
 	private String name;

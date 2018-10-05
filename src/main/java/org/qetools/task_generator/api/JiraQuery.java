@@ -23,7 +23,18 @@ package org.qetools.task_generator.api;
 
 import org.hamcrest.Matcher;
 
+/**
+ * Jira Query API.
+ * 
+ * @author Andrej Podhradsky
+ *
+ */
 public interface JiraQuery extends Matcher<JiraIssue> {
 
+	/**
+	 * Return a jira query as a string.
+	 * 
+	 * @return
+	 */
 	String getJiraQueryString();
 }

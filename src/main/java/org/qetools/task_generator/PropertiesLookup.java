@@ -25,20 +25,27 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.text.lookup.StringLookup;
 
+/**
+ * Looks up for properties defined in properties files or as a system property.
+ * 
+ * @author Andrej Podhradsky
+ *
+ */
 public class PropertiesLookup implements StringLookup {
 
 	private Properties props;
 
+	/**
+	 * Constructs the lookup from a list of properties files. Note that it depends
+	 * on the order. The last property definition overrides the previous one.
+	 * 
+	 * @param propertyFiles List of properties files
+	 */
 	public PropertiesLookup(List<File> propertyFiles) {
-		this(null, propertyFiles);
-	}
-
-	public PropertiesLookup(Map<String, String> map, List<File> propertyFiles) {
 		props = new Properties();
 		propertyFiles.forEach(file -> {
 			try {

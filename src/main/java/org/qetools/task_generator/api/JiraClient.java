@@ -23,18 +23,56 @@ package org.qetools.task_generator.api;
 
 import java.util.Map;
 
+/**
+ * Jira Client API.
+ * 
+ * @author Andrej Podhradsky
+ *
+ */
 public interface JiraClient {
 
+	/**
+	 * Sets Jira url.
+	 * 
+	 * @param url Jira url
+	 */
 	void setUrl(String url);
 
+	/**
+	 * Sets credentials.
+	 * 
+	 * @param username Username
+	 * @param password Password
+	 */
 	void setCredentials(String username, String password);
 
+	/**
+	 * Initializes the Jira client.
+	 */
 	void initialize();
 
+	/**
+	 * Creates a Jira issue.
+	 * 
+	 * @param fields Map of keys and values
+	 * @return Jira issue
+	 */
 	JiraIssue create(Map<String, String> fields);
 
+	/**
+	 * Checks if an issue with a given summary exists or not.
+	 * 
+	 * @param summary Issue summary
+	 * @return true if an issue with the summary exists, false otherwise
+	 */
 	boolean exists(String summary);
 
+	/**
+	 * Checks if an issue matching a given query exists or not.
+	 * 
+	 * @param jiraQuery Jira query
+	 * @return true if an issue matching the query exists, false otherwise
+	 */
 	boolean exists(JiraQuery jiraQuery);
 
 }

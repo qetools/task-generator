@@ -43,21 +43,48 @@ import org.qetools.task_generator.core.Task;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
+/**
+ * Generates epics, tasks and subtasks from a YAML template.
+ * 
+ * @author Andrej Podhradsky
+ *
+ */
 public class TaskGenerator {
 
 	private JiraClient jira;
 	private File propertyFile;
 	private StringSubstitutor variableResolver;
 
-	public TaskGenerator(JiraClient jira) throws FileNotFoundException, IOException {
-		this(jira, null);
+	/**
+	 * Constructs the generator with a given Jira client.
+	 * 
+	 * @param jiraClient Jira client
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
+	public TaskGenerator(JiraClient jiraClient) throws FileNotFoundException, IOException {
+		this(jiraClient, null);
 	}
 
-	public TaskGenerator(JiraClient jira, File propertyFile) throws FileNotFoundException, IOException {
-		this.jira = jira;
+	/**
+	 * Constructs the generator with a given Jira client. You can also specify a
+	 * property file which will be used for variable substitution in a template.
+	 * 
+	 * @param jiraClient   Jira client
+	 * @param propertyFile Property file
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
+	public TaskGenerator(JiraClient jiraClient, File propertyFile) throws FileNotFoundException, IOException {
+		this.jira = jiraClient;
 		this.propertyFile = propertyFile;
 	}
 
+	/**
+	 * Generates epics, tasks and subtasks from a YAML template.
+	 * 
+	 * @param yamlFile YAML template
+	 */
 	public void generate(File yamlFile) {
 		Template template = loadYamlFile(yamlFile);
 		initializeJiraClient(template, yamlFile);
@@ -66,6 +93,14 @@ public class TaskGenerator {
 		template.getTasks().forEach(task -> createTask(task, null));
 	}
 
+	/**
+	 * Initializes the Jira client with respect of variables defined an a given
+	 * template. A given YAML file is used just for resolving relative paths in the
+	 * template.
+	 * 
+	 * @param template Template
+	 * @param yamlFile YAML file of the template
+	 */
 	protected void initializeJiraClient(Template template, File yamlFile) {
 		List<File> propertyFiles = new ArrayList<>();
 		if (propertyFile != null) {
@@ -90,6 +125,11 @@ public class TaskGenerator {
 		jira.initialize();
 	}
 
+	/**
+	 * Creates epic.
+	 * 
+	 * @param epic Epic
+	 */
 	protected void createEpic(Epic epic) {
 		epic.setIssueType("Epic");
 		if (!jira.exists(withField("summary", epic.getSummary()))) {
@@ -100,6 +140,12 @@ public class TaskGenerator {
 		epic.getSubtasks().forEach(subtask -> createSubtask(subtask, epic));
 	}
 
+	/**
+	 * Creates a task which will be linked the an epic.
+	 * 
+	 * @param task Task
+	 * @param epic Epic
+	 */
 	protected void createTask(Task task, Epic epic) {
 		task.setIssueType("Task");
 		task.setEpic(epic);
@@ -110,6 +156,12 @@ public class TaskGenerator {
 		task.getSubtasks().forEach(subtask -> createSubtask(subtask, task));
 	}
 
+	/**
+	 * Creates a subtask of a given task / epic.
+	 * 
+	 * @param subtask Subtask
+	 * @param task    Parent task / epic
+	 */
 	protected void createSubtask(Task subtask, Task task) {
 		subtask.setIssueType("Sub-task");
 		subtask.setParent(task);
@@ -134,6 +186,13 @@ public class TaskGenerator {
 		return fields;
 	}
 
+	/**
+	 * Sets missing task fields from a parent.
+	 * 
+	 * @param child  Child
+	 * @param parent Parent
+	 * @return All task fields
+	 */
 	protected Task setMissingFields(Task child, Task parent) {
 		if (parent == null) {
 			return child;
@@ -147,6 +206,12 @@ public class TaskGenerator {
 		return child;
 	}
 
+	/**
+	 * Loads a template from a given YAML file.
+	 * 
+	 * @param yamlFile YAML file
+	 * @return Template
+	 */
 	private static Template loadYamlFile(File yamlFile) {
 		Constructor constructor = new Constructor(Template.class);
 		Yaml yaml = new Yaml(constructor);
