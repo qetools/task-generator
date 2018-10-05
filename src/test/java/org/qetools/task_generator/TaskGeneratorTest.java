@@ -25,7 +25,6 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.qetools.task_generator.jql.WithField.withField;
 
-import java.io.File;
 import java.io.IOException;
 
 import org.junit.After;
@@ -67,8 +66,7 @@ public class TaskGeneratorTest extends AbstractTaskGeneratorTest {
 		System.setProperty("taskNumber1", "11");
 		System.setProperty("subtaskNumber1", "111");
 		System.setProperty("subtaskNumber2", "112");
-		File yamlFile = getFile("template-substitution.yaml");
-		getTaskGenerator().generate(yamlFile);
+		generate("template-substitution.yaml");
 		collector.checkThat(jira.getAllIssues().size(), equalTo(4));
 		assertIssue(0, PROJECT + "-1", "Epic 1");
 		assertIssue(1, PROJECT + "-2", "Task 11");
@@ -78,8 +76,7 @@ public class TaskGeneratorTest extends AbstractTaskGeneratorTest {
 
 	@Test
 	public void testGeneratingWithEnvSubstitution() throws Exception {
-		File yamlFile = getFile("template-substitution-env.yaml");
-		getTaskGenerator().generate(yamlFile);
+		generate("template-substitution-env.yaml");
 		collector.checkThat(jira.getAllIssues().size(), equalTo(1));
 		assertIssue(0, PROJECT + "-1", "Epic", "Epic 1", System.getProperty("user.name"), "1.0");
 	}
@@ -89,8 +86,7 @@ public class TaskGeneratorTest extends AbstractTaskGeneratorTest {
 		System.setProperty("epicNumber1", "1");
 		System.setProperty("subtaskNumber1", "111");
 		System.setProperty("subtaskNumber2", "112");
-		File yamlFile = getFile("template-substitution.yaml");
-		getTaskGenerator().generate(yamlFile);
+		generate("template-substitution.yaml");
 		collector.checkThat(jira.getAllIssues().size(), equalTo(4));
 		assertIssue(0, PROJECT + "-1", "Epic 1");
 		assertIssue(1, PROJECT + "-2", "Task ${taskNumber1}");
@@ -102,8 +98,7 @@ public class TaskGeneratorTest extends AbstractTaskGeneratorTest {
 	public void testGeneratingWithSubstitutionInPropertyFile() throws Exception {
 		System.setProperty("subtaskNumber1", "111");
 		System.setProperty("subtaskNumber2", "112");
-		File yamlFile = getFile("template-substitution-propertyFile.yaml");
-		getTaskGenerator().generate(yamlFile);
+		generate("template-substitution-propertyFile.yaml");
 		collector.checkThat(jira.getAllIssues().size(), equalTo(4));
 		assertIssue(0, PROJECT + "-1", "Epic 01");
 		assertIssue(1, PROJECT + "-2", "Task 01");
@@ -116,8 +111,7 @@ public class TaskGeneratorTest extends AbstractTaskGeneratorTest {
 		System.setProperty("subtaskNumber1", "111");
 		System.setProperty("subtaskNumber2", "112");
 		System.setProperty("customFileName", "custom1");
-		File yamlFile = getFile("template-substitution-propertyFile-var.yaml");
-		getTaskGenerator().generate(yamlFile);
+		generate("template-substitution-propertyFile-var.yaml");
 		collector.checkThat(jira.getAllIssues().size(), equalTo(4));
 		assertIssue(0, PROJECT + "-1", "Epic 01");
 		assertIssue(1, PROJECT + "-2", "Task 01");
@@ -130,8 +124,7 @@ public class TaskGeneratorTest extends AbstractTaskGeneratorTest {
 		System.setProperty("taskNumber1", "11");
 		System.setProperty("subtaskNumber1", "111");
 		System.setProperty("subtaskNumber2", "112");
-		File yamlFile = getFile("template-substitution-propertyFile.yaml");
-		getTaskGenerator().generate(yamlFile);
+		generate("template-substitution-propertyFile.yaml");
 		collector.checkThat(jira.getAllIssues().size(), equalTo(4));
 		assertIssue(0, PROJECT + "-1", "Epic 01");
 		assertIssue(1, PROJECT + "-2", "Task 11");
@@ -144,8 +137,7 @@ public class TaskGeneratorTest extends AbstractTaskGeneratorTest {
 		System.setProperty("taskNumber1", "011");
 		System.setProperty("subtaskNumber1", "111");
 		System.setProperty("subtaskNumber2", "112");
-		File yamlFile = getFile("template-substitution-propertyFiles.yaml");
-		getTaskGenerator().generate(yamlFile);
+		generate("template-substitution-propertyFiles.yaml");
 		collector.checkThat(jira.getAllIssues().size(), equalTo(4));
 		assertIssue(0, PROJECT + "-1", "Epic 001");
 		assertIssue(1, PROJECT + "-2", "Task 011");
@@ -155,16 +147,14 @@ public class TaskGeneratorTest extends AbstractTaskGeneratorTest {
 
 	@Test
 	public void testGeneratingEpicWithPasswordBase64() throws Exception {
-		File yamlFile = getFile("template-epic.yaml");
-		getTaskGenerator("jira2.properties").generate(yamlFile);
+		generate("template-epic.yaml", "jira2.properties");
 		collector.checkThat(jira.getAllIssues().size(), equalTo(1));
 		assertIssue(0, PROJECT + "-1", "Epic 1");
 	}
 
 	@Test
 	public void testGeneratingEpicAndTaskWithInheritance() throws Exception {
-		File yamlFile = getFile("template-epic-task-inheritance.yaml");
-		getTaskGenerator().generate(yamlFile);
+		generate("template-epic-task-inheritance.yaml");
 		collector.checkThat(jira.getAllIssues().size(), equalTo(4));
 		assertIssue(0, PROJECT + "-1", "Epic", "Epic 1", "user1", "1.0");
 		assertIssue(1, PROJECT + "-2", "Task", "Task 11", "user11", "2.0");
@@ -174,8 +164,7 @@ public class TaskGeneratorTest extends AbstractTaskGeneratorTest {
 
 	@Test
 	public void testGeneratingEpicAndTaskAndSubtaskWithInheritance() throws Exception {
-		File yamlFile = getFile("template-epic-task-subtask-inheritance.yaml");
-		getTaskGenerator().generate(yamlFile);
+		generate("template-epic-task-subtask-inheritance.yaml");
 		collector.checkThat(jira.getAllIssues().size(), equalTo(13));
 		assertIssue(0, PROJECT + "-1", "Epic", "Epic 1", "user1", "1.0");
 		assertIssue(1, PROJECT + "-2", "Task", "Task 11", "user11", "1.1");
@@ -194,8 +183,7 @@ public class TaskGeneratorTest extends AbstractTaskGeneratorTest {
 
 	@Test
 	public void testGeneratingTaskAndSubtaskWithInheritance() throws Exception {
-		File yamlFile = getFile("template-task-subtask-inheritance.yaml");
-		getTaskGenerator().generate(yamlFile);
+		generate("template-task-subtask-inheritance.yaml");
 		collector.checkThat(jira.getAllIssues().size(), equalTo(4));
 		assertIssue(0, PROJECT + "-1", "Task", "Task 1", "user1", "1.0");
 		assertIssue(1, PROJECT + "-2", "Sub-task", "Subtask 11", "user11", "2.0");
@@ -228,7 +216,7 @@ public class TaskGeneratorTest extends AbstractTaskGeneratorTest {
 
 	@Override
 	protected void assertIssue(int index, String expectedKey, String expectedIssueType, String expectedSummary,
-			String expectedAssignee, String expectedVersion,String expectedEpic, String expectedParent) {
+			String expectedAssignee, String expectedVersion, String expectedEpic, String expectedParent) {
 		collector.checkThat("Cannot find issue with key '" + expectedKey + "'",
 				jira.exists(withField("key", expectedKey)), is(true));
 		collector.checkThat(jira.getAllIssues().get(index).getField("key"), equalTo(expectedKey));
@@ -240,13 +228,13 @@ public class TaskGeneratorTest extends AbstractTaskGeneratorTest {
 	}
 
 	@Override
-	protected TaskGenerator getTaskGenerator() throws IOException {
-		return getTaskGenerator("jira1.properties");
+	protected void generate(String yamlFile) throws IOException {
+		generate(yamlFile, "jira1.properties");
 	}
 
 	@Override
-	protected TaskGenerator getTaskGenerator(String fileName) throws IOException {
-		return new TaskGenerator(jira, getFile(fileName));
+	protected void generate(String yamlFile, String configFile) throws IOException {
+		new TaskGenerator(jira, getFile(configFile)).generate(getFile(yamlFile));
 	}
 
 }

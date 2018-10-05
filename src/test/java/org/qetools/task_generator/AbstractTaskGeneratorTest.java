@@ -41,26 +41,23 @@ public abstract class AbstractTaskGeneratorTest {
 
 	@Test
 	public void testGeneratingEpic() throws Exception {
-		File yamlFile = getFile("template-epic.yaml");
-		getTaskGenerator().generate(yamlFile);
+		generate("template-epic.yaml");
 		assertNumberOfIssues(1);
 		assertIssue(0, project + "-1", "Epic", "Epic 1", "user1", "1.0", null, null);
 	}
 
 	@Test
 	public void testGeneratingEpicRetry() throws Exception {
-		File yamlFile = getFile("template-epic.yaml");
-		getTaskGenerator().generate(yamlFile);
-		getTaskGenerator().generate(yamlFile);
+		generate("template-epic.yaml");
+		generate("template-epic.yaml");
 		assertNumberOfIssues(1);
 		assertIssue(0, project + "-1", "Epic", "Epic 1", "user1", "1.0", null, null);
 	}
 
 	@Test
 	public void testGeneratingEpicUpdate() throws Exception {
-		File yamlFile = getFile("template-epic-update.yaml");
-		getTaskGenerator().generate(yamlFile);
-		getTaskGenerator().generate(yamlFile);
+		generate("template-epic-update.yaml");
+		generate("template-epic-update.yaml");
 		assertNumberOfIssues(2);
 		assertIssue(0, project + "-1", "Epic", "Epic 1", "user1", "1.0", null, null);
 		assertIssue(1, project + "-2", "Epic", "Epic 2", "user2", "2.0", null, null);
@@ -68,8 +65,7 @@ public abstract class AbstractTaskGeneratorTest {
 
 	@Test
 	public void testGeneratingEpicAndTask() throws Exception {
-		File yamlFile = getFile("template-epic-task.yaml");
-		getTaskGenerator().generate(yamlFile);
+		generate("template-epic-task.yaml");
 		assertNumberOfIssues(2);
 		assertIssue(0, project + "-1", "Epic", "Epic 1", "user1", "1.0", null, null);
 		assertIssue(1, project + "-2", "Task", "Task 11", "user11", "1.0", project + "-1", null);
@@ -77,9 +73,8 @@ public abstract class AbstractTaskGeneratorTest {
 
 	@Test
 	public void testGeneratingEpicAndTaskRetry() throws Exception {
-		File yamlFile = getFile("template-epic-task.yaml");
-		getTaskGenerator().generate(yamlFile);
-		getTaskGenerator().generate(yamlFile);
+		generate("template-epic-task.yaml");
+		generate("template-epic-task.yaml");
 		assertNumberOfIssues(2);
 		assertIssue(0, project + "-1", "Epic", "Epic 1", "user1", "1.0", null, null);
 		assertIssue(1, project + "-2", "Task", "Task 11", "user11", "1.0", project + "-1", null);
@@ -87,9 +82,8 @@ public abstract class AbstractTaskGeneratorTest {
 
 	@Test
 	public void testGeneratingEpicAndTaskUpdate() throws Exception {
-		File yamlFile = getFile("template-epic-task-update.yaml");
-		getTaskGenerator().generate(yamlFile);
-		getTaskGenerator().generate(yamlFile);
+		generate("template-epic-task-update.yaml");
+		generate("template-epic-task-update.yaml");
 		assertNumberOfIssues(3);
 		assertIssue(0, project + "-1", "Epic", "Epic 1", "user1", "1.0", null, null);
 		assertIssue(1, project + "-2", "Task", "Task 11", "user11", "1.0", project + "-1", null);
@@ -98,8 +92,7 @@ public abstract class AbstractTaskGeneratorTest {
 
 	@Test
 	public void testGeneratingEpicAndTaskAndSubtask() throws Exception {
-		File yamlFile = getFile("template-epic-task-subtask.yaml");
-		getTaskGenerator().generate(yamlFile);
+		generate("template-epic-task-subtask.yaml");
 		assertNumberOfIssues(3);
 		assertIssue(0, project + "-1", "Epic", "Epic 1", "user1", "1.0", null, null);
 		assertIssue(1, project + "-2", "Task", "Task 11", "user11", "1.0", project + "-1", null);
@@ -108,8 +101,7 @@ public abstract class AbstractTaskGeneratorTest {
 
 	@Test
 	public void testGeneratingEpicAndTaskAndSubtaskRetry() throws Exception {
-		File yamlFile = getFile("template-epic-task-subtask.yaml");
-		getTaskGenerator().generate(yamlFile);
+		generate("template-epic-task-subtask.yaml");
 		assertNumberOfIssues(3);
 		assertIssue(0, project + "-1", "Epic", "Epic 1", "user1", "1.0", null, null);
 		assertIssue(1, project + "-2", "Task", "Task 11", "user11", "1.0", project + "-1", null);
@@ -118,9 +110,8 @@ public abstract class AbstractTaskGeneratorTest {
 
 	@Test
 	public void testGeneratingEpicAndTaskAndSubtaskUpdate() throws Exception {
-		File yamlFile = getFile("template-epic-task-subtask-update.yaml");
-		getTaskGenerator().generate(yamlFile);
-		getTaskGenerator().generate(yamlFile);
+		generate("template-epic-task-subtask-update.yaml");
+		generate("template-epic-task-subtask-update.yaml");
 		assertNumberOfIssues(4);
 		assertIssue(0, project + "-1", "Epic", "Epic 1", "user1", "1.0", null, null);
 		assertIssue(1, project + "-2", "Task", "Task 11", "user11", "1.0", project + "-1", null);
@@ -130,8 +121,7 @@ public abstract class AbstractTaskGeneratorTest {
 
 	@Test
 	public void testGeneratingEpicAndSubtask() throws Exception {
-		File yamlFile = getFile("template-epic-subtask.yaml");
-		getTaskGenerator().generate(yamlFile);
+		generate("template-epic-subtask.yaml");
 		assertNumberOfIssues(2);
 		assertIssue(0, project + "-1", "Epic", "Epic 1", "user1", "1.0", null, null);
 		assertIssue(1, project + "-2", "Sub-task", "Subtask 11", "user11", "1.0", null, project + "-1");
@@ -139,8 +129,7 @@ public abstract class AbstractTaskGeneratorTest {
 
 	@Test
 	public void testGeneratingEpicAndSubtaskRetry() throws Exception {
-		File yamlFile = getFile("template-epic-subtask.yaml");
-		getTaskGenerator().generate(yamlFile);
+		generate("template-epic-subtask.yaml");
 		assertNumberOfIssues(2);
 		assertIssue(0, project + "-1", "Epic", "Epic 1", "user1", "1.0", null, null);
 		assertIssue(1, project + "-2", "Sub-task", "Subtask 11", "user11", "1.0", null, project + "-1");
@@ -148,9 +137,8 @@ public abstract class AbstractTaskGeneratorTest {
 
 	@Test
 	public void testGeneratingEpicAndSubtaskUpdate() throws Exception {
-		File yamlFile = getFile("template-epic-subtask-update.yaml");
-		getTaskGenerator().generate(yamlFile);
-		getTaskGenerator().generate(yamlFile);
+		generate("template-epic-subtask-update.yaml");
+		generate("template-epic-subtask-update.yaml");
 		assertNumberOfIssues(3);
 		assertIssue(0, project + "-1", "Epic", "Epic 1", "user1", "1.0", null, null);
 		assertIssue(1, project + "-2", "Sub-task", "Subtask 11", "user11", "1.0", null, project + "-1");
@@ -159,17 +147,15 @@ public abstract class AbstractTaskGeneratorTest {
 
 	@Test
 	public void testGeneratingTask() throws Exception {
-		File yamlFile = getFile("template-task.yaml");
-		getTaskGenerator().generate(yamlFile);
+		generate("template-task.yaml");
 		assertNumberOfIssues(1);
 		assertIssue(0, project + "-1", "Task", "Task 1", "user1", null, null, null);
 	}
 
 	@Test
 	public void testGeneratingTaskRetry() throws Exception {
-		File yamlFile = getFile("template-task.yaml");
-		getTaskGenerator().generate(yamlFile);
-		getTaskGenerator().generate(yamlFile);
+		generate("template-task.yaml");
+		generate("template-task.yaml");
 		assertNumberOfIssues(1);
 		assertIssue(0, project + "-1", "Task", "Task 1", "user1", null);
 		assertIssue(0, project + "-1", "Task", "Task 1", "user1", null, null, null);
@@ -177,9 +163,8 @@ public abstract class AbstractTaskGeneratorTest {
 
 	@Test
 	public void testGeneratingTaskUpdate() throws Exception {
-		File yamlFile = getFile("template-task-update.yaml");
-		getTaskGenerator().generate(yamlFile);
-		getTaskGenerator().generate(yamlFile);
+		generate("template-task-update.yaml");
+		generate("template-task-update.yaml");
 		assertNumberOfIssues(2);
 		assertIssue(0, project + "-1", "Task", "Task 1", "user1", null, null, null);
 		assertIssue(1, project + "-2", "Task", "Task 2", "user2", null, null, null);
@@ -187,8 +172,7 @@ public abstract class AbstractTaskGeneratorTest {
 
 	@Test
 	public void testGeneratingTaskAndSubtask() throws Exception {
-		File yamlFile = getFile("template-task-subtask.yaml");
-		getTaskGenerator().generate(yamlFile);
+		generate("template-task-subtask.yaml");
 		assertNumberOfIssues(2);
 		assertIssue(0, project + "-1", "Task", "Task 1", "user1", null, null, null);
 		assertIssue(1, project + "-2", "Sub-task", "Subtask 11", "user11", null, null, project + "-1");
@@ -196,8 +180,7 @@ public abstract class AbstractTaskGeneratorTest {
 
 	@Test
 	public void testGeneratingTaskAndSubtaskRetry() throws Exception {
-		File yamlFile = getFile("template-task-subtask.yaml");
-		getTaskGenerator().generate(yamlFile);
+		generate("template-task-subtask.yaml");
 		assertNumberOfIssues(2);
 		assertIssue(0, project + "-1", "Task", "Task 1", "user1", null, null, null);
 		assertIssue(1, project + "-2", "Sub-task", "Subtask 11", "user11", null, null, project + "-1");
@@ -205,9 +188,8 @@ public abstract class AbstractTaskGeneratorTest {
 
 	@Test
 	public void testGeneratingTaskAndSubtaskUpdate() throws Exception {
-		File yamlFile = getFile("template-task-subtask-update.yaml");
-		getTaskGenerator().generate(yamlFile);
-		getTaskGenerator().generate(yamlFile);
+		generate("template-task-subtask-update.yaml");
+		generate("template-task-subtask-update.yaml");
 		assertNumberOfIssues(3);
 		assertIssue(0, project + "-1", "Task", "Task 1", "user1", null, null, null);
 		assertIssue(1, project + "-2", "Sub-task", "Subtask 11", "user11", null, null, project + "-1");
@@ -222,12 +204,14 @@ public abstract class AbstractTaskGeneratorTest {
 	protected abstract void assertIssue(int index, String expectedKey, String expectedIssueType, String expectedSummary,
 			String expectedAssignee, String expectedVersion, String expectedEpic, String expectedParent);
 
-	protected abstract TaskGenerator getTaskGenerator() throws IOException;
-
-	protected abstract TaskGenerator getTaskGenerator(String fileName) throws IOException;
-
 	protected File getFile(String fileName) {
 		return new File(getClass().getClassLoader().getResource(fileName).getFile());
 	}
+
+	protected void generate(String yamlFile) throws IOException {
+		generate(yamlFile, null);
+	}
+
+	protected abstract void generate(String yamlFile, String configFile) throws IOException;
 
 }

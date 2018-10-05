@@ -22,18 +22,18 @@
 package org.qetools.task_generator.integration;
 
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.qetools.task_generator.TaskGeneratorApp.SYSTEM_PROPERTY_CONFIG;
 
 import java.io.IOException;
 
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.rules.ErrorCollector;
 import org.qetools.task_generator.AbstractTaskGeneratorTest;
-import org.qetools.task_generator.TaskGenerator;
-import org.qetools.task_generator.api.JiraClient;
-import org.qetools.task_generator.impl.JiraClientRcarz;
+import org.qetools.task_generator.TaskGeneratorApp;
 
 public class TaskGeneratorIT extends AbstractTaskGeneratorTest {
 
@@ -44,8 +44,6 @@ public class TaskGeneratorIT extends AbstractTaskGeneratorTest {
 	public TaskGeneratorIT() {
 		super(PROJECT);
 	}
-
-	private JiraClient jiraClient;
 
 	@Rule
 	public ErrorCollector collector = new ErrorCollector();
@@ -65,9 +63,9 @@ public class TaskGeneratorIT extends AbstractTaskGeneratorTest {
 		jira.clear();
 	}
 
-	@Before
-	public void initializeJiraClient() {
-		jiraClient = new JiraClientRcarz();
+	@After
+	public void cleanSystemProperties() {
+		System.getProperties().remove(SYSTEM_PROPERTY_CONFIG);
 	}
 
 	@Override
@@ -84,6 +82,7 @@ public class TaskGeneratorIT extends AbstractTaskGeneratorTest {
 		collector.checkThat(jira.getAllIssues().get(index).getField("assignee"), equalTo(expectedAssignee));
 		collector.checkThat(jira.getAllIssues().get(index).getField("fixVersion"), equalTo(expectedVersion));
 	}
+
 	@Override
 	protected void assertIssue(int index, String expectedKey, String expectedIssueType, String expectedSummary,
 			String expectedAssignee, String expectedVersion, String expectedEpic, String expectedParent) {
@@ -97,13 +96,16 @@ public class TaskGeneratorIT extends AbstractTaskGeneratorTest {
 	}
 
 	@Override
-	protected TaskGenerator getTaskGenerator() throws IOException {
-		return getTaskGenerator("jira3.properties");
+	protected void generate(String yamlFile) throws IOException {
+		generate(yamlFile, "jira3.properties");
 	}
 
 	@Override
-	protected TaskGenerator getTaskGenerator(String fileName) throws IOException {
-		return new TaskGenerator(jiraClient, getFile(fileName));
+	protected void generate(String yamlFile, String configFile) throws IOException {
+		if (configFile != null) {
+			System.setProperty(SYSTEM_PROPERTY_CONFIG, getFile(configFile).getAbsolutePath());
+		}
+		TaskGeneratorApp.main(new String[] { getFile(yamlFile).getAbsolutePath() });
 	}
 
 }
