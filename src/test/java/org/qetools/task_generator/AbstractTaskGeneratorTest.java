@@ -57,6 +57,8 @@ public abstract class AbstractTaskGeneratorTest {
 	@Test
 	public void testGeneratingEpicUpdate() throws Exception {
 		generate("template-epic.yaml");
+		assertNumberOfIssues(1);
+		assertIssue(0, project + "-1", "Epic", "Epic 1", "user1", "1.0", null, null);
 		generate("template-epic-update.yaml");
 		assertNumberOfIssues(2);
 		assertIssue(0, project + "-1", "Epic", "Epic 1", "user1", "1.0", null, null);
@@ -83,6 +85,9 @@ public abstract class AbstractTaskGeneratorTest {
 	@Test
 	public void testGeneratingEpicAndTaskUpdate() throws Exception {
 		generate("template-epic-task.yaml");
+		assertNumberOfIssues(2);
+		assertIssue(0, project + "-1", "Epic", "Epic 1", "user1", "1.0", null, null);
+		assertIssue(1, project + "-2", "Task", "Task 11", "user11", "1.0", project + "-1", null);
 		generate("template-epic-task-update.yaml");
 		assertNumberOfIssues(3);
 		assertIssue(0, project + "-1", "Epic", "Epic 1", "user1", "1.0", null, null);
@@ -111,6 +116,10 @@ public abstract class AbstractTaskGeneratorTest {
 	@Test
 	public void testGeneratingEpicAndTaskAndSubtaskUpdate() throws Exception {
 		generate("template-epic-task-subtask.yaml");
+		assertNumberOfIssues(3);
+		assertIssue(0, project + "-1", "Epic", "Epic 1", "user1", "1.0", null, null);
+		assertIssue(1, project + "-2", "Task", "Task 11", "user11", "1.0", project + "-1", null);
+		assertIssue(2, project + "-3", "Sub-task", "Subtask 111", "user111", "1.0", null, project + "-2");
 		generate("template-epic-task-subtask-update.yaml");
 		assertNumberOfIssues(4);
 		assertIssue(0, project + "-1", "Epic", "Epic 1", "user1", "1.0", null, null);
@@ -164,6 +173,8 @@ public abstract class AbstractTaskGeneratorTest {
 	@Test
 	public void testGeneratingTaskUpdate() throws Exception {
 		generate("template-task.yaml");
+		assertNumberOfIssues(1);
+		assertIssue(0, project + "-1", "Task", "Task 1", "user1", null, null, null);
 		generate("template-task-update.yaml");
 		assertNumberOfIssues(2);
 		assertIssue(0, project + "-1", "Task", "Task 1", "user1", null, null, null);

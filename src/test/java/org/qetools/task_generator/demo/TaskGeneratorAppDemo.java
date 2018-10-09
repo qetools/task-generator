@@ -1,4 +1,4 @@
-package org.qetools.task_generator.integration;
+package org.qetools.task_generator.demo;
 
 import java.io.IOException;
 

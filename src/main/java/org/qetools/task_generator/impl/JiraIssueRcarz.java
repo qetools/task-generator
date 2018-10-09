@@ -44,6 +44,13 @@ public class JiraIssueRcarz implements JiraIssue {
 
 	@Override
 	public String getField(String key) {
+		if ("fixVersion".equals(key)) {
+			if (issue.getFixVersions().isEmpty()) {
+				return null;
+			} else {
+				return issue.getFixVersions().get(0).getName();
+			}
+		}
 		return (String) issue.getField(key);
 	}
 

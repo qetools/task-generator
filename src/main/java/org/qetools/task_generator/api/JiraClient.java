@@ -22,6 +22,7 @@
 package org.qetools.task_generator.api;
 
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Jira Client API.
@@ -58,6 +59,15 @@ public interface JiraClient {
 	 * @return Jira issue
 	 */
 	JiraIssue create(Map<String, String> fields);
+
+	/**
+	 * 
+	 * Gets a Jira issue matching the jira query.
+	 * 
+	 * @param jiraQuery Jira query
+	 * @return Jira issue or null if it doesn't exist
+	 */
+	JiraIssue get(JiraQuery jiraQuery);
 
 	/**
 	 * Checks if an issue with a given summary exists or not.

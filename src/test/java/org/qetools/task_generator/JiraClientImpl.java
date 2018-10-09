@@ -38,6 +38,11 @@ public class JiraClientImpl implements JiraClient {
 	private String password;
 	private List<JiraIssue> issues;
 
+	public JiraClientImpl() {
+		index = 1;
+		issues = new ArrayList<>();
+	}
+
 	@Override
 	public void setUrl(String url) {
 		this.url = url;
@@ -51,11 +56,9 @@ public class JiraClientImpl implements JiraClient {
 
 	@Override
 	public void initialize() {
-		index = 1;
 		if (!"bot".equals(username) || !"admin123".equals(password)) {
 			throw new RuntimeException("Incorrect credentials");
 		}
-		issues = new ArrayList<>();
 	}
 
 	@Override
@@ -84,6 +87,11 @@ public class JiraClientImpl implements JiraClient {
 			throw new IllegalArgumentException("Query cannot be null");
 		}
 		return issues.stream().anyMatch(issue -> jiraQuery.matches(issue));
+	}
+
+	@Override
+	public JiraIssue get(JiraQuery jiraQuery) {
+		return issues.stream().filter(issue -> jiraQuery.matches(issue)).findFirst().orElse(null);
 	}
 
 }

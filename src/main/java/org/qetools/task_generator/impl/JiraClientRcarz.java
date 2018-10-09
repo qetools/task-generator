@@ -86,7 +86,6 @@ public class JiraClientRcarz implements JiraClient {
 				builder.field("customfield_12311140", fields.get("epic"));
 			}
 			if (fields.get("parent") != null) {
-				System.out.println("Parent: " + fields.get("parent"));
 				builder.field(Field.PARENT, fields.get("parent"));
 			}
 			issue = builder.execute();
@@ -134,5 +133,14 @@ public class JiraClientRcarz implements JiraClient {
 			list.add(string);
 		}
 		return list;
+	}
+
+	@Override
+	public JiraIssue get(JiraQuery jiraQuery) {
+		List<JiraIssue> issues = search(jiraQuery.getJiraQueryString());
+		if (issues.isEmpty()) {
+			return null;
+		}
+		return issues.get(0);
 	}
 }
