@@ -41,6 +41,8 @@ import org.qetools.task_generator.api.JiraClient;
 import org.qetools.task_generator.api.JiraIssue;
 import org.qetools.task_generator.core.Epic;
 import org.qetools.task_generator.core.Task;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
@@ -51,6 +53,8 @@ import org.yaml.snakeyaml.constructor.Constructor;
  *
  */
 public class TaskGenerator {
+
+	private static final Logger LOG = LoggerFactory.getLogger(TaskGenerator.class);
 
 	private JiraClient jira;
 	private File propertyFile;
@@ -132,12 +136,15 @@ public class TaskGenerator {
 	 * @param epic Epic
 	 */
 	protected void createEpic(Epic epic) {
+		LOG.info("Create epic '{}'", epic.getSummary());
 		epic.setIssueType("Epic");
 		Optional<JiraIssue> issue = Optional.ofNullable(jira.get(withSummary(epic.getSummary())));
 		if (issue.isPresent()) {
+			LOG.info("\tEpic already exists, key = {}", issue.get().getField("key"));
 			epic.setKey(issue.get().getField("key"));
 		} else {
 			JiraIssue createdIssue = jira.create(fields(epic));
+			LOG.info("\tEpic created, key = {}", createdIssue.getField("key"));
 			epic.setKey(createdIssue.getField("key"));
 		}
 		epic.getTasks().forEach(task -> createTask(task, epic));
@@ -151,14 +158,17 @@ public class TaskGenerator {
 	 * @param epic Epic
 	 */
 	protected void createTask(Task task, Epic epic) {
+		LOG.info("Create task '{}'", task.getSummary());
 		task.setIssueType("Task");
 		task.setEpic(epic);
 		setMissingFields(task, epic);
 		Optional<JiraIssue> issue = Optional.ofNullable(jira.get(withSummary(task.getSummary())));
 		if (issue.isPresent()) {
+			LOG.info("\tTask already exists, key = {}", issue.get().getField("key"));
 			task.setKey(issue.get().getField("key"));
 		} else {
 			JiraIssue createdIssue = jira.create(fields(task));
+			LOG.info("\tTask created, key = {}", createdIssue.getField("key"));
 			task.setKey(createdIssue.getField("key"));
 		}
 		task.getSubtasks().forEach(subtask -> createSubtask(subtask, task));
@@ -171,12 +181,17 @@ public class TaskGenerator {
 	 * @param task    Parent task / epic
 	 */
 	protected void createSubtask(Task subtask, Task task) {
+		LOG.info("Create sub-task '{}'", task.getSummary());
 		subtask.setIssueType("Sub-task");
 		subtask.setParent(task);
 		setMissingFields(subtask, task);
 		Optional<JiraIssue> issue = Optional.ofNullable(jira.get(withSummary(subtask.getSummary())));
-		if (!issue.isPresent()) {
-			jira.create(fields(subtask));
+		if (issue.isPresent()) {
+			LOG.info("\tSub-task already exists, key = {}", issue.get().getField("key"));
+		} else {
+			JiraIssue createdIssue = jira.create(fields(subtask));
+			LOG.info("\tSub-task created, key = {}", createdIssue.getField("key"));
+			subtask.setKey(createdIssue.getField("key"));
 		}
 	}
 
