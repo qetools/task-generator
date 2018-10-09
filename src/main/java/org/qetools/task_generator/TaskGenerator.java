@@ -184,7 +184,7 @@ public class TaskGenerator {
 	 */
 	protected void createSubtask(Task subtask, Task task) {
 		resolve(subtask);
-		LOG.info("Create sub-task '{}'", task.getSummary());
+		LOG.info("Create sub-task '{}'", subtask.getSummary());
 		subtask.setIssueType("Sub-task");
 		subtask.setParent(task);
 		setMissingFields(subtask, task);
