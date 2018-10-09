@@ -136,6 +136,7 @@ public class TaskGenerator {
 	 * @param epic Epic
 	 */
 	protected void createEpic(Epic epic) {
+		resolve(epic);
 		LOG.info("Create epic '{}'", epic.getSummary());
 		epic.setIssueType("Epic");
 		Optional<JiraIssue> issue = Optional.ofNullable(jira.get(withSummary(epic.getSummary())));
@@ -158,6 +159,7 @@ public class TaskGenerator {
 	 * @param epic Epic
 	 */
 	protected void createTask(Task task, Epic epic) {
+		resolve(task);
 		LOG.info("Create task '{}'", task.getSummary());
 		task.setIssueType("Task");
 		task.setEpic(epic);
@@ -181,6 +183,7 @@ public class TaskGenerator {
 	 * @param task    Parent task / epic
 	 */
 	protected void createSubtask(Task subtask, Task task) {
+		resolve(subtask);
 		LOG.info("Create sub-task '{}'", task.getSummary());
 		subtask.setIssueType("Sub-task");
 		subtask.setParent(task);
@@ -209,6 +212,13 @@ public class TaskGenerator {
 			fields.put("parent", variableResolver.replace(task.getParent().getKey()));
 		}
 		return fields;
+	}
+
+	protected Task resolve(Task task) {
+		task.setSummary(variableResolver.replace(task.getSummary()));
+		task.setAssignee(variableResolver.replace(task.getAssignee()));
+		task.setFixVersion(variableResolver.replace(task.getFixVersion()));
+		return task;
 	}
 
 	/**
