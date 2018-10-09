@@ -21,7 +21,6 @@
  ******************************************************************************/
 package org.qetools.task_generator;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,11 +46,6 @@ public class JiraIssueImpl implements JiraIssue {
 	@Override
 	public String getField(String key) {
 		return fields.get(key);
-	}
-
-	@Override
-	public Map<String, String> getFieldsMap() {
-		return Collections.unmodifiableMap(fields);
 	}
 
 }

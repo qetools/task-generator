@@ -174,7 +174,8 @@ public class TaskGenerator {
 		subtask.setIssueType("Sub-task");
 		subtask.setParent(task);
 		setMissingFields(subtask, task);
-		if (!jira.exists(withSummary(subtask.getSummary()))) {
+		Optional<JiraIssue> issue = Optional.ofNullable(jira.get(withSummary(subtask.getSummary())));
+		if (!issue.isPresent()) {
 			jira.create(fields(subtask));
 		}
 	}

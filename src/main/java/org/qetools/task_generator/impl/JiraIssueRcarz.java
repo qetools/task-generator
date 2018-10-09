@@ -21,7 +21,6 @@
  ******************************************************************************/
 package org.qetools.task_generator.impl;
 
-import java.util.Collections;
 import java.util.Map;
 
 import org.qetools.task_generator.api.JiraIssue;
@@ -52,11 +51,6 @@ public class JiraIssueRcarz implements JiraIssue {
 			}
 		}
 		return (String) issue.getField(key);
-	}
-
-	@Override
-	public Map<String, String> getFieldsMap() {
-		return Collections.unmodifiableMap(map);
 	}
 
 }

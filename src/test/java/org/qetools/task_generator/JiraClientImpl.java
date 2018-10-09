@@ -74,22 +74,6 @@ public class JiraClientImpl implements JiraClient {
 	}
 
 	@Override
-	public boolean exists(String summary) {
-		if (summary == null) {
-			throw new IllegalArgumentException("Summary cannot be null");
-		}
-		return issues.stream().anyMatch(issue -> summary.equals(issue.getField("summary")));
-	}
-
-	@Override
-	public boolean exists(JiraQuery jiraQuery) {
-		if (jiraQuery == null) {
-			throw new IllegalArgumentException("Query cannot be null");
-		}
-		return issues.stream().anyMatch(issue -> jiraQuery.matches(issue));
-	}
-
-	@Override
 	public JiraIssue get(JiraQuery jiraQuery) {
 		return issues.stream().filter(issue -> jiraQuery.matches(issue)).findFirst().orElse(null);
 	}

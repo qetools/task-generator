@@ -23,6 +23,7 @@ package org.qetools.task_generator;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNull.notNullValue;
 import static org.qetools.task_generator.jql.WithField.withField;
 
 import java.io.IOException;
@@ -197,8 +198,8 @@ public class TaskGeneratorTest extends AbstractTaskGeneratorTest {
 	}
 
 	private void assertIssue(int index, String expectedKey, String expectedSummary) {
-		collector.checkThat("Cannot find issue with key '" + expectedKey + "'",
-				jira.exists(withField("key", expectedKey)), is(true));
+		collector.checkThat("Cannot find issue with key '" + expectedKey + "'", jira.get(withField("key", expectedKey)),
+				notNullValue());
 		collector.checkThat(jira.getAllIssues().get(index).getField("key"), equalTo(expectedKey));
 		collector.checkThat(jira.getAllIssues().get(index).getField("summary"), equalTo(expectedSummary));
 	}
@@ -207,7 +208,7 @@ public class TaskGeneratorTest extends AbstractTaskGeneratorTest {
 	protected void assertIssue(int index, String expectedKey, String expectedIssueType, String expectedSummary,
 			String expectedAssignee, String expectedVersion) {
 		collector.checkThat("Cannot find issue with key '" + expectedKey + "'",
-				jira.exists(withField("key", expectedKey)), is(true));
+				jira.get(withField("key", expectedKey)), notNullValue());
 		collector.checkThat(jira.getAllIssues().get(index).getField("key"), equalTo(expectedKey));
 		collector.checkThat(jira.getAllIssues().get(index).getField("summary"), equalTo(expectedSummary));
 		collector.checkThat(jira.getAllIssues().get(index).getField("assignee"), equalTo(expectedAssignee));
@@ -218,7 +219,7 @@ public class TaskGeneratorTest extends AbstractTaskGeneratorTest {
 	protected void assertIssue(int index, String expectedKey, String expectedIssueType, String expectedSummary,
 			String expectedAssignee, String expectedVersion, String expectedEpic, String expectedParent) {
 		collector.checkThat("Cannot find issue with key '" + expectedKey + "'",
-				jira.exists(withField("key", expectedKey)), is(true));
+				jira.get(withField("key", expectedKey)), notNullValue());
 		collector.checkThat(jira.getAllIssues().get(index).getField("key"), equalTo(expectedKey));
 		collector.checkThat(jira.getAllIssues().get(index).getField("summary"), equalTo(expectedSummary));
 		collector.checkThat(jira.getAllIssues().get(index).getField("assignee"), equalTo(expectedAssignee));

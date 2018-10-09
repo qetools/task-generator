@@ -112,21 +112,6 @@ public class JiraClientRcarz implements JiraClient {
 		return jiraIssues;
 	}
 
-	@Override
-	public boolean exists(String summary) {
-		return exists("MYPROJECT", "Task", summary);
-	}
-
-	public boolean exists(String project, String issueType, String summary) {
-		return search("project = \"" + project + "\" AND issuetype = \"" + issueType + "\" AND summary ~ \"\\\""
-				+ summary + "\\\"\"").isEmpty();
-	}
-
-	@Override
-	public boolean exists(JiraQuery jiraQuery) {
-		return !search(jiraQuery.getJiraQueryString()).isEmpty();
-	}
-
 	private static List<String> list(String... strings) {
 		List<String> list = new ArrayList<>();
 		for (String string : strings) {
