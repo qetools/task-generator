@@ -28,8 +28,8 @@ import org.qetools.task_generator.api.JiraQuery;
 
 public class WithField extends BaseMatcher<JiraIssue> implements JiraQuery {
 
-	private String key;
-	private String value;
+	protected String key;
+	protected String value;
 
 	public static WithField withField(String key, String value) {
 		return new WithField(key, value);

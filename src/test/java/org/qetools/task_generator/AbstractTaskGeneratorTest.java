@@ -56,7 +56,7 @@ public abstract class AbstractTaskGeneratorTest {
 
 	@Test
 	public void testGeneratingEpicUpdate() throws Exception {
-		generate("template-epic-update.yaml");
+		generate("template-epic.yaml");
 		generate("template-epic-update.yaml");
 		assertNumberOfIssues(2);
 		assertIssue(0, project + "-1", "Epic", "Epic 1", "user1", "1.0", null, null);
@@ -82,7 +82,7 @@ public abstract class AbstractTaskGeneratorTest {
 
 	@Test
 	public void testGeneratingEpicAndTaskUpdate() throws Exception {
-		generate("template-epic-task-update.yaml");
+		generate("template-epic-task.yaml");
 		generate("template-epic-task-update.yaml");
 		assertNumberOfIssues(3);
 		assertIssue(0, project + "-1", "Epic", "Epic 1", "user1", "1.0", null, null);
@@ -110,7 +110,7 @@ public abstract class AbstractTaskGeneratorTest {
 
 	@Test
 	public void testGeneratingEpicAndTaskAndSubtaskUpdate() throws Exception {
-		generate("template-epic-task-subtask-update.yaml");
+		generate("template-epic-task-subtask.yaml");
 		generate("template-epic-task-subtask-update.yaml");
 		assertNumberOfIssues(4);
 		assertIssue(0, project + "-1", "Epic", "Epic 1", "user1", "1.0", null, null);
@@ -137,7 +137,7 @@ public abstract class AbstractTaskGeneratorTest {
 
 	@Test
 	public void testGeneratingEpicAndSubtaskUpdate() throws Exception {
-		generate("template-epic-subtask-update.yaml");
+		generate("template-epic-subtask.yaml");
 		generate("template-epic-subtask-update.yaml");
 		assertNumberOfIssues(3);
 		assertIssue(0, project + "-1", "Epic", "Epic 1", "user1", "1.0", null, null);
@@ -163,7 +163,7 @@ public abstract class AbstractTaskGeneratorTest {
 
 	@Test
 	public void testGeneratingTaskUpdate() throws Exception {
-		generate("template-task-update.yaml");
+		generate("template-task.yaml");
 		generate("template-task-update.yaml");
 		assertNumberOfIssues(2);
 		assertIssue(0, project + "-1", "Task", "Task 1", "user1", null, null, null);
@@ -188,7 +188,10 @@ public abstract class AbstractTaskGeneratorTest {
 
 	@Test
 	public void testGeneratingTaskAndSubtaskUpdate() throws Exception {
-		generate("template-task-subtask-update.yaml");
+		generate("template-task-subtask.yaml");
+		assertNumberOfIssues(2);
+		assertIssue(0, project + "-1", "Task", "Task 1", "user1", null, null, null);
+		assertIssue(1, project + "-2", "Sub-task", "Subtask 11", "user11", null, null, project + "-1");
 		generate("template-task-subtask-update.yaml");
 		assertNumberOfIssues(3);
 		assertIssue(0, project + "-1", "Task", "Task 1", "user1", null, null, null);

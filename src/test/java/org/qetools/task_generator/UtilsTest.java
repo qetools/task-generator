@@ -42,8 +42,21 @@ public class UtilsTest {
 	}
 
 	@Test
+	public void testParsingQueryWithTilda() {
+		Map<String, String> map = Utils.parseQuery("summary ~ \"Task 1\"");
+		collector.checkThat(map.get("summary"), equalTo("Task 1"));
+	}
+
+	@Test
 	public void testParsingAndQueries() {
 		Map<String, String> map = Utils.parseQuery("summary = \"Task 1\" AND key = \"TEST-1\"");
+		collector.checkThat(map.get("summary"), IsEqual.equalTo("Task 1"));
+		collector.checkThat(map.get("key"), equalTo("TEST-1"));
+	}
+
+	@Test
+	public void testParsingAndQueriesWithTilda() {
+		Map<String, String> map = Utils.parseQuery("summary ~ \"Task 1\" AND key = \"TEST-1\"");
 		collector.checkThat(map.get("summary"), IsEqual.equalTo("Task 1"));
 		collector.checkThat(map.get("key"), equalTo("TEST-1"));
 	}

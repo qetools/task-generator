@@ -21,7 +21,7 @@
  ******************************************************************************/
 package org.qetools.task_generator;
 
-import static org.qetools.task_generator.jql.WithField.withField;
+import static org.qetools.task_generator.jql.WithSummary.withSummary;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -58,7 +58,8 @@ public class TaskGenerator {
 	/**
 	 * Constructs the generator with a given Jira client.
 	 * 
-	 * @param jiraClient Jira client
+	 * @param jiraClient
+	 *                       Jira client
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
@@ -67,11 +68,13 @@ public class TaskGenerator {
 	}
 
 	/**
-	 * Constructs the generator with a given Jira client. You can also specify a
-	 * property file which will be used for variable substitution in a template.
+	 * Constructs the generator with a given Jira client. You can also specify a property file which will be used for
+	 * variable substitution in a template.
 	 * 
-	 * @param jiraClient   Jira client
-	 * @param propertyFile Property file
+	 * @param jiraClient
+	 *                         Jira client
+	 * @param propertyFile
+	 *                         Property file
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
@@ -83,7 +86,8 @@ public class TaskGenerator {
 	/**
 	 * Generates epics, tasks and subtasks from a YAML template.
 	 * 
-	 * @param yamlFile YAML template
+	 * @param yamlFile
+	 *                     YAML template
 	 */
 	public void generate(File yamlFile) {
 		Template template = loadYamlFile(yamlFile);
@@ -94,12 +98,13 @@ public class TaskGenerator {
 	}
 
 	/**
-	 * Initializes the Jira client with respect of variables defined an a given
-	 * template. A given YAML file is used just for resolving relative paths in the
-	 * template.
+	 * Initializes the Jira client with respect of variables defined an a given template. A given YAML file is used just
+	 * for resolving relative paths in the template.
 	 * 
-	 * @param template Template
-	 * @param yamlFile YAML file of the template
+	 * @param template
+	 *                     Template
+	 * @param yamlFile
+	 *                     YAML file of the template
 	 */
 	protected void initializeJiraClient(Template template, File yamlFile) {
 		List<File> propertyFiles = new ArrayList<>();
@@ -128,11 +133,12 @@ public class TaskGenerator {
 	/**
 	 * Creates epic.
 	 * 
-	 * @param epic Epic
+	 * @param epic
+	 *                 Epic
 	 */
 	protected void createEpic(Epic epic) {
 		epic.setIssueType("Epic");
-		if (!jira.exists(withField("summary", epic.getSummary()))) {
+		if (!jira.exists(withSummary(epic.getSummary()))) {
 			JiraIssue createdIssue = jira.create(fields(epic));
 			epic.setKey(createdIssue.getField("key"));
 		}
@@ -143,13 +149,15 @@ public class TaskGenerator {
 	/**
 	 * Creates a task which will be linked the an epic.
 	 * 
-	 * @param task Task
-	 * @param epic Epic
+	 * @param task
+	 *                 Task
+	 * @param epic
+	 *                 Epic
 	 */
 	protected void createTask(Task task, Epic epic) {
 		task.setIssueType("Task");
 		task.setEpic(epic);
-		if (!jira.exists(withField("summary", task.getSummary()))) {
+		if (!jira.exists(withSummary(task.getSummary()))) {
 			JiraIssue createdIssue = jira.create(fields(setMissingFields(task, epic)));
 			task.setKey(createdIssue.getField("key"));
 		}
@@ -159,13 +167,15 @@ public class TaskGenerator {
 	/**
 	 * Creates a subtask of a given task / epic.
 	 * 
-	 * @param subtask Subtask
-	 * @param task    Parent task / epic
+	 * @param subtask
+	 *                    Subtask
+	 * @param task
+	 *                    Parent task / epic
 	 */
 	protected void createSubtask(Task subtask, Task task) {
 		subtask.setIssueType("Sub-task");
 		subtask.setParent(task);
-		if (!jira.exists(withField("summary", subtask.getSummary()))) {
+		if (!jira.exists(withSummary(subtask.getSummary()))) {
 			jira.create(fields(setMissingFields(subtask, task)));
 		}
 	}
@@ -189,8 +199,10 @@ public class TaskGenerator {
 	/**
 	 * Sets missing task fields from a parent.
 	 * 
-	 * @param child  Child
-	 * @param parent Parent
+	 * @param child
+	 *                   Child
+	 * @param parent
+	 *                   Parent
 	 * @return All task fields
 	 */
 	protected Task setMissingFields(Task child, Task parent) {
@@ -209,7 +221,8 @@ public class TaskGenerator {
 	/**
 	 * Loads a template from a given YAML file.
 	 * 
-	 * @param yamlFile YAML file
+	 * @param yamlFile
+	 *                     YAML file
 	 * @return Template
 	 */
 	private static Template loadYamlFile(File yamlFile) {

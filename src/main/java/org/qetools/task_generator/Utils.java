@@ -70,7 +70,7 @@ public class Utils {
 	 */
 	public static Map<String, String> parseQuery(String query) {
 		Map<String, String> map = new HashMap<>();
-		String keyValueRegex = "(\\w+)\\s*=\\s*\"([^(AND)]+)\"";
+		String keyValueRegex = "(\\w+)\\s*[=~]\\s*\"([^(AND)]+)\"";
 		Pattern keyValuePattern = Pattern.compile(keyValueRegex);
 		Matcher m = keyValuePattern.matcher(query);
 		while (m.find()) {
