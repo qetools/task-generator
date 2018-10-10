@@ -88,6 +88,9 @@ public class JiraClientRcarz implements JiraClient {
 			if (fields.get("parent") != null) {
 				builder.field(Field.PARENT, fields.get("parent"));
 			}
+			if (fields.get("name") != null) {
+				builder.field("customfield_12311141", fields.get("name"));
+			}
 			issue = builder.execute();
 		} catch (JiraException e) {
 			throw new RuntimeException("Error during creating an issue.", e);
