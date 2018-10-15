@@ -14,7 +14,7 @@
 	<distributionManagement>
 		<repository>
 			<id>bintray-qetools</id>
-			<url>https://api.bintray.com/maven/qetools/task-generator/</url>
+			<url>https://api.bintray.com/maven/qetools/maven/task-generator/;publish=1</url>
 		</repository>
 	</distributionManagement>
 	<repositories>
@@ -22,11 +22,6 @@
 			<id>bintray-qetools</id>
 			<name>QE Tools Repository</name>
 			<url>https://dl.bintray.com/qetools/maven</url>
-		</repository>
-		<repository>
-			<id>my-repo2</id>
-			<name>your custom repo</name>
-			<url>http://jarsm2.dyndns.dk</url>
 		</repository>
 	</repositories>
 	<dependencies>
