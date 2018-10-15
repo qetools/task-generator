@@ -5,11 +5,18 @@
 	<groupId>org.qetools</groupId>
 	<artifactId>task-generator</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<jacoco.version>0.7.9</jacoco.version>
 	</properties>
+	<distributionManagement>
+		<repository>
+			<id>bintray-qetools</id>
+			<url>https://api.bintray.com/maven/qetools/task-generator/</url>
+		</repository>
+	</distributionManagement>
 	<repositories>
 		<repository>
 			<id>bintray-qetools</id>
