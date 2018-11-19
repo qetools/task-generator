@@ -22,12 +22,14 @@
 package org.qetools.task_generator.integration;
 
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThat;
 import static org.qetools.task_generator.TaskGeneratorApp.SYSTEM_PROPERTY_CONFIG;
 
 import java.io.IOException;
 
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -70,7 +72,7 @@ public class TaskGeneratorIT extends AbstractTaskGeneratorTest {
 
 	@Override
 	protected void assertNumberOfIssues(int expectedNumberOfIssues) {
-		collector.checkThat(jira.getAllIssues().size(), equalTo(expectedNumberOfIssues));
+		assertThat("Enexpected number of issues", jira.getAllIssues().size(), equalTo(expectedNumberOfIssues));
 	}
 
 	@Override

@@ -33,7 +33,7 @@ public class WithSummary extends WithField {
 
 	@Override
 	public String getJiraQueryString() {
-		return key + " ~ \"" + value + "\"";
+		return key + " ~ '\"" + value + "\"'";
 	}
 
 }
