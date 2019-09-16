@@ -79,6 +79,9 @@ public class JiraClientRcarz implements JiraClient {
 			if (fields.get("assignee") != null) {
 				builder.field(Field.ASSIGNEE, fields.get("assignee"));
 			}
+			if (fields.get("description") != null) {
+				builder.field(Field.DESCRIPTION, fields.get("description"));
+			}
 			if (fields.get("fixVersion") != null) {
 				builder.field(Field.FIX_VERSIONS, list(fields.get("fixVersion")));
 			}

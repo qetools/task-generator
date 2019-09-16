@@ -76,21 +76,23 @@ public class TaskGeneratorIT extends AbstractTaskGeneratorTest {
 	}
 
 	@Override
-	protected void assertIssue(int index, String expectedKey, String expectedIssueType, String expectedSummary,
+	protected void assertIssue(int index, String expectedKey, String expectedIssueType, String expectedSummary, String expectedDescription,
 			String expectedAssignee, String expectedVersion) {
 		collector.checkThat(jira.getAllIssues().get(index).getField("key"), equalTo(expectedKey));
 		collector.checkThat(jira.getAllIssues().get(index).getField("issuetype"), equalTo(expectedIssueType));
 		collector.checkThat(jira.getAllIssues().get(index).getField("summary"), equalTo(expectedSummary));
+		collector.checkThat(jira.getAllIssues().get(index).getField("description"), equalTo(expectedDescription));
 		collector.checkThat(jira.getAllIssues().get(index).getField("assignee"), equalTo(expectedAssignee));
 		collector.checkThat(jira.getAllIssues().get(index).getField("fixVersion"), equalTo(expectedVersion));
 	}
 
 	@Override
-	protected void assertIssue(int index, String expectedKey, String expectedIssueType, String expectedSummary,
+	protected void assertIssue(int index, String expectedKey, String expectedIssueType, String expectedSummary,  String expectedDescription,
 			String expectedAssignee, String expectedVersion, String expectedEpic, String expectedParent) {
 		collector.checkThat(jira.getAllIssues().get(index).getField("key"), equalTo(expectedKey));
 		collector.checkThat(jira.getAllIssues().get(index).getField("issuetype"), equalTo(expectedIssueType));
 		collector.checkThat(jira.getAllIssues().get(index).getField("summary"), equalTo(expectedSummary));
+		collector.checkThat(jira.getAllIssues().get(index).getField("description"), equalTo(expectedDescription));
 		collector.checkThat(jira.getAllIssues().get(index).getField("assignee"), equalTo(expectedAssignee));
 		collector.checkThat(jira.getAllIssues().get(index).getField("fixVersion"), equalTo(expectedVersion));
 		collector.checkThat(jira.getAllIssues().get(index).getField("epic"), equalTo(expectedEpic));

@@ -79,7 +79,7 @@ public class TaskGeneratorTest extends AbstractTaskGeneratorTest {
 	public void testGeneratingWithEnvSubstitution() throws Exception {
 		generate("template-substitution-env.yaml");
 		collector.checkThat(jira.getAllIssues().size(), equalTo(1));
-		assertIssue(0, PROJECT + "-1", "Epic", "Epic 1", System.getProperty("user.name"), "1.0");
+		assertIssue(0, PROJECT + "-1", "Epic", "Epic 1", null, System.getProperty("user.name"), "1.0");
 	}
 
 	@Test
@@ -157,39 +157,39 @@ public class TaskGeneratorTest extends AbstractTaskGeneratorTest {
 	public void testGeneratingEpicAndTaskWithInheritance() throws Exception {
 		generate("template-epic-task-inheritance.yaml");
 		collector.checkThat(jira.getAllIssues().size(), equalTo(4));
-		assertIssue(0, PROJECT + "-1", "Epic", "Epic 1", "user1", "1.0");
-		assertIssue(1, PROJECT + "-2", "Task", "Task 11", "user11", "2.0");
-		assertIssue(2, PROJECT + "-3", "Task", "Task 12", "user12", "1.0");
-		assertIssue(3, PROJECT + "-4", "Task", "Task 13", "user1", "1.0");
+		assertIssue(0, PROJECT + "-1", "Epic", "Epic 1", null,  "user1", "1.0");
+		assertIssue(1, PROJECT + "-2", "Task", "Task 11", null, "user11", "2.0");
+		assertIssue(2, PROJECT + "-3", "Task", "Task 12", null,  "user12", "1.0");
+		assertIssue(3, PROJECT + "-4", "Task", "Task 13", null, "user1", "1.0");
 	}
 
 	@Test
 	public void testGeneratingEpicAndTaskAndSubtaskWithInheritance() throws Exception {
 		generate("template-epic-task-subtask-inheritance.yaml");
 		collector.checkThat(jira.getAllIssues().size(), equalTo(13));
-		assertIssue(0, PROJECT + "-1", "Epic", "Epic 1", "user1", "1.0");
-		assertIssue(1, PROJECT + "-2", "Task", "Task 11", "user11", "1.1");
-		assertIssue(2, PROJECT + "-3", "Sub-task", "Subtask 111", "user111", "1.1.1");
-		assertIssue(3, PROJECT + "-4", "Sub-task", "Subtask 112", "user112", "1.1");
-		assertIssue(4, PROJECT + "-5", "Sub-task", "Subtask 113", "user11", "1.1");
-		assertIssue(5, PROJECT + "-6", "Task", "Task 12", "user12", "1.0");
-		assertIssue(6, PROJECT + "-7", "Sub-task", "Subtask 121", "user121", "1.1.2");
-		assertIssue(7, PROJECT + "-8", "Sub-task", "Subtask 122", "user122", "1.0");
-		assertIssue(8, PROJECT + "-9", "Sub-task", "Subtask 123", "user12", "1.0");
-		assertIssue(9, PROJECT + "-10", "Task", "Task 13", "user1", "1.0");
-		assertIssue(10, PROJECT + "-11", "Sub-task", "Subtask 131", "user131", "1.1.3");
-		assertIssue(11, PROJECT + "-12", "Sub-task", "Subtask 132", "user132", "1.0");
-		assertIssue(12, PROJECT + "-13", "Sub-task", "Subtask 133", "user1", "1.0");
+		assertIssue(0, PROJECT + "-1", "Epic", "Epic 1", null, "user1", "1.0");
+		assertIssue(1, PROJECT + "-2", "Task", "Task 11", null, "user11", "1.1");
+		assertIssue(2, PROJECT + "-3", "Sub-task", "Subtask 111", null, "user111", "1.1.1");
+		assertIssue(3, PROJECT + "-4", "Sub-task", "Subtask 112", null, "user112", "1.1");
+		assertIssue(4, PROJECT + "-5", "Sub-task", "Subtask 113", null, "user11", "1.1");
+		assertIssue(5, PROJECT + "-6", "Task", "Task 12", null, "user12", "1.0");
+		assertIssue(6, PROJECT + "-7", "Sub-task", "Subtask 121", null,"user121", "1.1.2");
+		assertIssue(7, PROJECT + "-8", "Sub-task", "Subtask 122", null, "user122", "1.0");
+		assertIssue(8, PROJECT + "-9", "Sub-task", "Subtask 123", null, "user12", "1.0");
+		assertIssue(9, PROJECT + "-10", "Task", "Task 13", null, "user1", "1.0");
+		assertIssue(10, PROJECT + "-11", "Sub-task", "Subtask 131", null, "user131", "1.1.3");
+		assertIssue(11, PROJECT + "-12", "Sub-task", "Subtask 132", null, "user132", "1.0");
+		assertIssue(12, PROJECT + "-13", "Sub-task", "Subtask 133", null, "user1", "1.0");
 	}
 
 	@Test
 	public void testGeneratingTaskAndSubtaskWithInheritance() throws Exception {
 		generate("template-task-subtask-inheritance.yaml");
 		collector.checkThat(jira.getAllIssues().size(), equalTo(4));
-		assertIssue(0, PROJECT + "-1", "Task", "Task 1", "user1", "1.0");
-		assertIssue(1, PROJECT + "-2", "Sub-task", "Subtask 11", "user11", "2.0");
-		assertIssue(2, PROJECT + "-3", "Sub-task", "Subtask 12", "user12", "1.0");
-		assertIssue(3, PROJECT + "-4", "Sub-task", "Subtask 13", "user1", "1.0");
+		assertIssue(0, PROJECT + "-1", "Task", "Task 1", null, "user1", "1.0");
+		assertIssue(1, PROJECT + "-2", "Sub-task", "Subtask 11", null, "user11", "2.0");
+		assertIssue(2, PROJECT + "-3", "Sub-task", "Subtask 12", null, "user12", "1.0");
+		assertIssue(3, PROJECT + "-4", "Sub-task", "Subtask 13", null, "user1", "1.0");
 	}
 
 	@Override
@@ -205,23 +205,25 @@ public class TaskGeneratorTest extends AbstractTaskGeneratorTest {
 	}
 
 	@Override
-	protected void assertIssue(int index, String expectedKey, String expectedIssueType, String expectedSummary,
+	protected void assertIssue(int index, String expectedKey, String expectedIssueType, String expectedSummary, String expectedDescription,
 			String expectedAssignee, String expectedVersion) {
 		collector.checkThat("Cannot find issue with key '" + expectedKey + "'",
 				jira.get(withField("key", expectedKey)), notNullValue());
 		collector.checkThat(jira.getAllIssues().get(index).getField("key"), equalTo(expectedKey));
 		collector.checkThat(jira.getAllIssues().get(index).getField("summary"), equalTo(expectedSummary));
+		collector.checkThat(jira.getAllIssues().get(index).getField("description"), equalTo(expectedDescription));
 		collector.checkThat(jira.getAllIssues().get(index).getField("assignee"), equalTo(expectedAssignee));
 		collector.checkThat(jira.getAllIssues().get(index).getField("fixVersion"), equalTo(expectedVersion));
 	}
 
 	@Override
-	protected void assertIssue(int index, String expectedKey, String expectedIssueType, String expectedSummary,
+	protected void assertIssue(int index, String expectedKey, String expectedIssueType, String expectedSummary, String expectedDescription,
 			String expectedAssignee, String expectedVersion, String expectedEpic, String expectedParent) {
 		collector.checkThat("Cannot find issue with key '" + expectedKey + "'",
 				jira.get(withField("key", expectedKey)), notNullValue());
 		collector.checkThat(jira.getAllIssues().get(index).getField("key"), equalTo(expectedKey));
 		collector.checkThat(jira.getAllIssues().get(index).getField("summary"), equalTo(expectedSummary));
+		collector.checkThat(jira.getAllIssues().get(index).getField("description"), equalTo(expectedDescription));
 		collector.checkThat(jira.getAllIssues().get(index).getField("assignee"), equalTo(expectedAssignee));
 		collector.checkThat(jira.getAllIssues().get(index).getField("fixVersion"), equalTo(expectedVersion));
 		collector.checkThat(jira.getAllIssues().get(index).getField("epic"), equalTo(expectedEpic));

@@ -40,6 +40,7 @@ public class Task {
 	private List<Task> subtasks;
 	private Epic epic;
 	private Task parent;
+	private String description;
 
 	public String getKey() {
 		return key;
@@ -105,4 +106,11 @@ public class Task {
 		this.parent = parent;
 	}
 
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
 }

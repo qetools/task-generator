@@ -3,3 +3,4 @@ tasks:
   assignee: user1
 - summary: Task 2
   assignee: user2
+  description: New description

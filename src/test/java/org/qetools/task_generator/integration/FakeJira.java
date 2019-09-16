@@ -113,6 +113,7 @@ public class FakeJira {
 			}
 			JSONObject jsonObj = JSONObject.fromObject(req.body());
 			String summary = getField(jsonObj, "summary");
+			String description = getField(jsonObj, "description");
 			String project = getField(jsonObj, "project.key");
 			String issueType = getField(jsonObj, "issuetype.name");
 			String assignee = getField(jsonObj, "assignee.name");
@@ -122,6 +123,7 @@ public class FakeJira {
 			FakeJiraIssue issue = add(project, summary);
 			issue.setField("issuetype", issueType);
 			issue.setField("assignee", assignee);
+			issue.setField("description", description);
 			issue.setField("fixVersion", fixVersion);
 			issue.setField("epic", epic);
 			issue.setField("parent", parent);

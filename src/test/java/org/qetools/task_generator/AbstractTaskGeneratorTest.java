@@ -43,7 +43,7 @@ public abstract class AbstractTaskGeneratorTest {
 	public void testGeneratingEpic() throws Exception {
 		generate("template-epic.yaml");
 		assertNumberOfIssues(1);
-		assertIssue(0, project + "-1", "Epic", "Epic 1", "user1", "1.0", null, null);
+		assertIssue(0, project + "-1", "Epic", "Epic 1", "Epic Task for user1", "user1", "1.0", null, null);
 	}
 
 	@Test
@@ -51,26 +51,26 @@ public abstract class AbstractTaskGeneratorTest {
 		generate("template-epic.yaml");
 		generate("template-epic.yaml");
 		assertNumberOfIssues(1);
-		assertIssue(0, project + "-1", "Epic", "Epic 1", "user1", "1.0", null, null);
+		assertIssue(0, project + "-1", "Epic", "Epic 1", "Epic Task for user1", "user1", "1.0", null, null);
 	}
 
 	@Test
 	public void testGeneratingEpicUpdate() throws Exception {
 		generate("template-epic.yaml");
 		assertNumberOfIssues(1);
-		assertIssue(0, project + "-1", "Epic", "Epic 1", "user1", "1.0", null, null);
+		assertIssue(0, project + "-1", "Epic", "Epic 1", "Epic Task for user1", "user1", "1.0", null, null);
 		generate("template-epic-update.yaml");
 		assertNumberOfIssues(2);
-		assertIssue(0, project + "-1", "Epic", "Epic 1", "user1", "1.0", null, null);
-		assertIssue(1, project + "-2", "Epic", "Epic 2", "user2", "2.0", null, null);
+		assertIssue(0, project + "-1", "Epic", "Epic 1", "Epic Task for user1", "user1", "1.0", null, null);
+		assertIssue(1, project + "-2", "Epic", "Epic 2", "Epic Task for user2", "user2", "2.0", null, null);
 	}
 
 	@Test
 	public void testGeneratingEpicAndTask() throws Exception {
 		generate("template-epic-task.yaml");
 		assertNumberOfIssues(2);
-		assertIssue(0, project + "-1", "Epic", "Epic 1", "user1", "1.0", null, null);
-		assertIssue(1, project + "-2", "Task", "Task 11", "user11", "1.0", project + "-1", null);
+		assertIssue(0, project + "-1", "Epic", "Epic 1", "Epic Task for user1", "user1", "1.0", null, null);
+		assertIssue(1, project + "-2", "Task", "Task 11", "Task for user1", "user11", "1.0", project + "-1", null);
 	}
 
 	@Test
@@ -78,70 +78,70 @@ public abstract class AbstractTaskGeneratorTest {
 		generate("template-epic-task.yaml");
 		generate("template-epic-task.yaml");
 		assertNumberOfIssues(2);
-		assertIssue(0, project + "-1", "Epic", "Epic 1", "user1", "1.0", null, null);
-		assertIssue(1, project + "-2", "Task", "Task 11", "user11", "1.0", project + "-1", null);
+		assertIssue(0, project + "-1", "Epic", "Epic 1", "Epic Task for user1","user1", "1.0", null, null);
+		assertIssue(1, project + "-2", "Task", "Task 11", "Task for user1", "user11", "1.0", project + "-1", null);
 	}
 
 	@Test
 	public void testGeneratingEpicAndTaskUpdate() throws Exception {
 		generate("template-epic-task.yaml");
 		assertNumberOfIssues(2);
-		assertIssue(0, project + "-1", "Epic", "Epic 1", "user1", "1.0", null, null);
-		assertIssue(1, project + "-2", "Task", "Task 11", "user11", "1.0", project + "-1", null);
+		assertIssue(0, project + "-1", "Epic", "Epic 1", "Epic Task for user1","user1", "1.0", null, null);
+		assertIssue(1, project + "-2", "Task", "Task 11", "Task for user1", "user11", "1.0", project + "-1", null);
 		generate("template-epic-task-update.yaml");
 		assertNumberOfIssues(3);
-		assertIssue(0, project + "-1", "Epic", "Epic 1", "user1", "1.0", null, null);
-		assertIssue(1, project + "-2", "Task", "Task 11", "user11", "1.0", project + "-1", null);
-		assertIssue(2, project + "-3", "Task", "Task 12", "user12", "1.0", project + "-1", null);
+		assertIssue(0, project + "-1", "Epic", "Epic 1", "Epic Task for user1", "user1", "1.0", null, null);
+		assertIssue(1, project + "-2", "Task", "Task 11", "Task for user1", "user11", "1.0", project + "-1", null);
+		assertIssue(2, project + "-3", "Task", "Task 12", "New description", "user12", "1.0", project + "-1", null);
 	}
 
 	@Test
 	public void testGeneratingEpicAndTaskAndSubtask() throws Exception {
 		generate("template-epic-task-subtask.yaml");
 		assertNumberOfIssues(3);
-		assertIssue(0, project + "-1", "Epic", "Epic 1", "user1", "1.0", null, null);
-		assertIssue(1, project + "-2", "Task", "Task 11", "user11", "1.0", project + "-1", null);
-		assertIssue(2, project + "-3", "Sub-task", "Subtask 111", "user111", "1.0", null, project + "-2");
+		assertIssue(0, project + "-1", "Epic", "Epic 1", "Epic Task for user1", "user1", "1.0", null, null);
+		assertIssue(1, project + "-2", "Task", "Task 11", "Task for user1", "user11", "1.0", project + "-1", null);
+		assertIssue(2, project + "-3", "Sub-task", "Subtask 111", "Subtask", "user111", "1.0", null, project + "-2");
 	}
 
 	@Test
 	public void testGeneratingEpicAndTaskAndSubtaskRetry() throws Exception {
 		generate("template-epic-task-subtask.yaml");
 		assertNumberOfIssues(3);
-		assertIssue(0, project + "-1", "Epic", "Epic 1", "user1", "1.0", null, null);
-		assertIssue(1, project + "-2", "Task", "Task 11", "user11", "1.0", project + "-1", null);
-		assertIssue(2, project + "-3", "Sub-task", "Subtask 111", "user111", "1.0", null, project + "-2");
+		assertIssue(0, project + "-1", "Epic", "Epic 1", "Epic Task for user1", "user1", "1.0", null, null);
+		assertIssue(1, project + "-2", "Task", "Task 11", "Task for user1","user11", "1.0", project + "-1", null);
+		assertIssue(2, project + "-3", "Sub-task", "Subtask 111", "Subtask","user111", "1.0", null, project + "-2");
 	}
 
 	@Test
 	public void testGeneratingEpicAndTaskAndSubtaskUpdate() throws Exception {
 		generate("template-epic-task-subtask.yaml");
 		assertNumberOfIssues(3);
-		assertIssue(0, project + "-1", "Epic", "Epic 1", "user1", "1.0", null, null);
-		assertIssue(1, project + "-2", "Task", "Task 11", "user11", "1.0", project + "-1", null);
-		assertIssue(2, project + "-3", "Sub-task", "Subtask 111", "user111", "1.0", null, project + "-2");
+		assertIssue(0, project + "-1", "Epic", "Epic 1", "Epic Task for user1", "user1", "1.0", null, null);
+		assertIssue(1, project + "-2", "Task", "Task 11", "Task for user1", "user11", "1.0", project + "-1", null);
+		assertIssue(2, project + "-3", "Sub-task", "Subtask 111", "Subtask", "user111", "1.0", null, project + "-2");
 		generate("template-epic-task-subtask-update.yaml");
 		assertNumberOfIssues(4);
-		assertIssue(0, project + "-1", "Epic", "Epic 1", "user1", "1.0", null, null);
-		assertIssue(1, project + "-2", "Task", "Task 11", "user11", "1.0", project + "-1", null);
-		assertIssue(2, project + "-3", "Sub-task", "Subtask 111", "user111", "1.0", null, project + "-2");
-		assertIssue(3, project + "-4", "Sub-task", "Subtask 112", "user112", "1.0", null, project + "-2");
+		assertIssue(0, project + "-1", "Epic", "Epic 1", "Epic Task for user1", "user1", "1.0", null, null);
+		assertIssue(1, project + "-2", "Task", "Task 11", "Task for user1", "user11", "1.0", project + "-1", null);
+		assertIssue(2, project + "-3", "Sub-task", "Subtask 111", "Subtask", "user111", "1.0", null, project + "-2");
+		assertIssue(3, project + "-4", "Sub-task", "Subtask 112", null, "user112", "1.0", null, project + "-2");
 	}
 
 	@Test
 	public void testGeneratingEpicAndSubtask() throws Exception {
 		generate("template-epic-subtask.yaml");
 		assertNumberOfIssues(2);
-		assertIssue(0, project + "-1", "Epic", "Epic 1", "user1", "1.0", null, null);
-		assertIssue(1, project + "-2", "Sub-task", "Subtask 11", "user11", "1.0", null, project + "-1");
+		assertIssue(0, project + "-1", "Epic", "Epic 1", "Epic Task for user1", "user1", "1.0", null, null);
+		assertIssue(1, project + "-2", "Sub-task", "Subtask 11", "Subtask", "user11", "1.0", null, project + "-1");
 	}
 
 	@Test
 	public void testGeneratingEpicAndSubtaskRetry() throws Exception {
 		generate("template-epic-subtask.yaml");
 		assertNumberOfIssues(2);
-		assertIssue(0, project + "-1", "Epic", "Epic 1", "user1", "1.0", null, null);
-		assertIssue(1, project + "-2", "Sub-task", "Subtask 11", "user11", "1.0", null, project + "-1");
+		assertIssue(0, project + "-1", "Epic", "Epic 1", "Epic Task for user1", "user1", "1.0", null, null);
+		assertIssue(1, project + "-2", "Sub-task", "Subtask 11", "Subtask", "user11", "1.0", null, project + "-1");
 	}
 
 	@Test
@@ -149,16 +149,16 @@ public abstract class AbstractTaskGeneratorTest {
 		generate("template-epic-subtask.yaml");
 		generate("template-epic-subtask-update.yaml");
 		assertNumberOfIssues(3);
-		assertIssue(0, project + "-1", "Epic", "Epic 1", "user1", "1.0", null, null);
-		assertIssue(1, project + "-2", "Sub-task", "Subtask 11", "user11", "1.0", null, project + "-1");
-		assertIssue(2, project + "-3", "Sub-task", "Subtask 12", "user12", "1.0", null, project + "-1");
+		assertIssue(0, project + "-1", "Epic", "Epic 1", "Epic Task for user1","user1", "1.0", null, null);
+		assertIssue(1, project + "-2", "Sub-task", "Subtask 11", "Subtask", "user11", "1.0", null, project + "-1");
+		assertIssue(2, project + "-3", "Sub-task", "Subtask 12", null,"user12", "1.0", null, project + "-1");
 	}
 
 	@Test
 	public void testGeneratingTask() throws Exception {
 		generate("template-task.yaml");
 		assertNumberOfIssues(1);
-		assertIssue(0, project + "-1", "Task", "Task 1", "user1", null, null, null);
+		assertIssue(0, project + "-1", "Task", "Task 1", "Task for user1", "user1", null, null, null);
 	}
 
 	@Test
@@ -166,56 +166,56 @@ public abstract class AbstractTaskGeneratorTest {
 		generate("template-task.yaml");
 		generate("template-task.yaml");
 		assertNumberOfIssues(1);
-		assertIssue(0, project + "-1", "Task", "Task 1", "user1", null);
-		assertIssue(0, project + "-1", "Task", "Task 1", "user1", null, null, null);
+		assertIssue(0, project + "-1", "Task", "Task 1", "Task for user1", "user1", null);
+		assertIssue(0, project + "-1", "Task", "Task 1", "Task for user1", "user1", null, null, null);
 	}
 
 	@Test
 	public void testGeneratingTaskUpdate() throws Exception {
 		generate("template-task.yaml");
 		assertNumberOfIssues(1);
-		assertIssue(0, project + "-1", "Task", "Task 1", "user1", null, null, null);
+		assertIssue(0, project + "-1", "Task", "Task 1", "Task for user1", "user1", null, null, null);
 		generate("template-task-update.yaml");
 		assertNumberOfIssues(2);
-		assertIssue(0, project + "-1", "Task", "Task 1", "user1", null, null, null);
-		assertIssue(1, project + "-2", "Task", "Task 2", "user2", null, null, null);
+		assertIssue(0, project + "-1", "Task", "Task 1", "Task for user1", "user1", null, null, null);
+		assertIssue(1, project + "-2", "Task", "Task 2", "New description", "user2", null, null, null);
 	}
 
 	@Test
 	public void testGeneratingTaskAndSubtask() throws Exception {
 		generate("template-task-subtask.yaml");
 		assertNumberOfIssues(2);
-		assertIssue(0, project + "-1", "Task", "Task 1", "user1", null, null, null);
-		assertIssue(1, project + "-2", "Sub-task", "Subtask 11", "user11", null, null, project + "-1");
+		assertIssue(0, project + "-1", "Task", "Task 1",null, "user1", null, null, null);
+		assertIssue(1, project + "-2", "Sub-task", "Subtask 11", null,  "user11", null, null, project + "-1");
 	}
 
 	@Test
 	public void testGeneratingTaskAndSubtaskRetry() throws Exception {
 		generate("template-task-subtask.yaml");
 		assertNumberOfIssues(2);
-		assertIssue(0, project + "-1", "Task", "Task 1", "user1", null, null, null);
-		assertIssue(1, project + "-2", "Sub-task", "Subtask 11", "user11", null, null, project + "-1");
+		assertIssue(0, project + "-1", "Task", "Task 1", null, "user1", null, null, null);
+		assertIssue(1, project + "-2", "Sub-task", "Subtask 11", null,  "user11", null, null, project + "-1");
 	}
 
 	@Test
 	public void testGeneratingTaskAndSubtaskUpdate() throws Exception {
 		generate("template-task-subtask.yaml");
 		assertNumberOfIssues(2);
-		assertIssue(0, project + "-1", "Task", "Task 1", "user1", null, null, null);
-		assertIssue(1, project + "-2", "Sub-task", "Subtask 11", "user11", null, null, project + "-1");
+		assertIssue(0, project + "-1", "Task", "Task 1", null, "user1", null, null, null);
+		assertIssue(1, project + "-2", "Sub-task", "Subtask 11", null,  "user11", null, null, project + "-1");
 		generate("template-task-subtask-update.yaml");
 		assertNumberOfIssues(3);
-		assertIssue(0, project + "-1", "Task", "Task 1", "user1", null, null, null);
-		assertIssue(1, project + "-2", "Sub-task", "Subtask 11", "user11", null, null, project + "-1");
-		assertIssue(2, project + "-3", "Sub-task", "Subtask 12", "user12", null, null, project + "-1");
+		assertIssue(0, project + "-1", "Task", "Task 1", null,  "user1", null, null, null);
+		assertIssue(1, project + "-2", "Sub-task", "Subtask 11", null,  "user11", null, null, project + "-1");
+		assertIssue(2, project + "-3", "Sub-task", "Subtask 12", null,  "user12", null, null, project + "-1");
 	}
 
 	protected abstract void assertNumberOfIssues(int expectedNumberOfIssues);
 
-	protected abstract void assertIssue(int index, String expectedKey, String expectedIssueType, String expectedSummary,
+	protected abstract void assertIssue(int index, String expectedKey, String expectedIssueType, String expectedSummary, String expectedDescription,
 			String expectedAssignee, String expectedVersion);
 
-	protected abstract void assertIssue(int index, String expectedKey, String expectedIssueType, String expectedSummary,
+	protected abstract void assertIssue(int index, String expectedKey, String expectedIssueType, String expectedSummary, String expectedDescription,
 			String expectedAssignee, String expectedVersion, String expectedEpic, String expectedParent);
 
 	protected File getFile(String fileName) {

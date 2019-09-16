@@ -213,6 +213,7 @@ public class TaskGenerator {
 		fields.put("issuetype", variableResolver.replace(task.getIssueType()));
 		fields.put("project", variableResolver.getStringLookup().lookup("JIRA_PROJECT"));
 		fields.put("summary", variableResolver.replace(task.getSummary()));
+		fields.put("description", variableResolver.replace(task.getDescription()));
 		fields.put("assignee", variableResolver.replace(task.getAssignee()));
 		fields.put("fixVersion", variableResolver.replace(task.getFixVersion()));
 		if (task.getEpic() != null) {
