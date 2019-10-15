@@ -23,7 +23,10 @@ package org.qetools.task_generator.integration;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
+
+import static org.hamcrest.core.IsNull.notNullValue;
 import static org.qetools.task_generator.TaskGeneratorApp.SYSTEM_PROPERTY_CONFIG;
+import static org.qetools.task_generator.jql.WithField.withField;
 
 import java.io.IOException;
 
@@ -97,6 +100,19 @@ public class TaskGeneratorIT extends AbstractTaskGeneratorTest {
 		collector.checkThat(jira.getAllIssues().get(index).getField("fixVersion"), equalTo(expectedVersion));
 		collector.checkThat(jira.getAllIssues().get(index).getField("epic"), equalTo(expectedEpic));
 		collector.checkThat(jira.getAllIssues().get(index).getField("parent"), equalTo(expectedParent));
+	}
+
+	@Override
+	protected void assertIssue(int index, String expectedKey, String expectedIssueType, String expectedSummary, String expectedDescription,
+		String expectedAssignee, String expectedVersion, String expectedEpic, String expectedParent, String expectedComponent) {
+		collector.checkThat(jira.getAllIssues().get(index).getField("key"), equalTo(expectedKey));
+		collector.checkThat(jira.getAllIssues().get(index).getField("summary"), equalTo(expectedSummary));
+		collector.checkThat(jira.getAllIssues().get(index).getField("description"), equalTo(expectedDescription));
+		collector.checkThat(jira.getAllIssues().get(index).getField("assignee"), equalTo(expectedAssignee));
+		collector.checkThat(jira.getAllIssues().get(index).getField("fixVersion"), equalTo(expectedVersion));
+		collector.checkThat(jira.getAllIssues().get(index).getField("epic"), equalTo(expectedEpic));
+		collector.checkThat(jira.getAllIssues().get(index).getField("parent"), equalTo(expectedParent));
+		collector.checkThat(jira.getAllIssues().get(index).getField("component"), equalTo(expectedComponent));
 	}
 
 	@Override

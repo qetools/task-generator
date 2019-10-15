@@ -120,6 +120,7 @@ public class FakeJira {
 			String fixVersion = getField(jsonObj, "fixVersions.name");
 			String epic = getField(jsonObj, "customfield_12311140");
 			String parent = getField(jsonObj, "parent.key");
+			String component = getField(jsonObj, "components.name");
 			FakeJiraIssue issue = add(project, summary);
 			issue.setField("issuetype", issueType);
 			issue.setField("assignee", assignee);
@@ -127,6 +128,7 @@ public class FakeJira {
 			issue.setField("fixVersion", fixVersion);
 			issue.setField("epic", epic);
 			issue.setField("parent", parent);
+			issue.setField("component", component);
 			return JSONObject.fromObject(issue);
 		});
 		Spark.init();

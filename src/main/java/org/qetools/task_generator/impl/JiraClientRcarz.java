@@ -85,6 +85,9 @@ public class JiraClientRcarz implements JiraClient {
 			if (fields.get("fixVersion") != null) {
 				builder.field(Field.FIX_VERSIONS, list(fields.get("fixVersion")));
 			}
+			if (fields.get("components") != null) {
+				builder.field(Field.COMPONENTS, list(fields.get("components")));
+			}
 			if (fields.get("epic") != null) {
 				builder.field("customfield_12311140", fields.get("epic"));
 			}

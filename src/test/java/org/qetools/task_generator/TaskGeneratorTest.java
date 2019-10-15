@@ -157,7 +157,7 @@ public class TaskGeneratorTest extends AbstractTaskGeneratorTest {
 	public void testGeneratingEpicAndTaskWithInheritance() throws Exception {
 		generate("template-epic-task-inheritance.yaml");
 		collector.checkThat(jira.getAllIssues().size(), equalTo(4));
-		assertIssue(0, PROJECT + "-1", "Epic", "Epic 1", null,  "user1", "1.0");
+		assertIssue(0, PROJECT + "-1", "Epic", "Epic 1", null,  "user1", "1.0", null, null,"Fuse Online");
 		assertIssue(1, PROJECT + "-2", "Task", "Task 11", null, "user11", "2.0");
 		assertIssue(2, PROJECT + "-3", "Task", "Task 12", null,  "user12", "1.0");
 		assertIssue(3, PROJECT + "-4", "Task", "Task 13", null, "user1", "1.0");
@@ -167,9 +167,9 @@ public class TaskGeneratorTest extends AbstractTaskGeneratorTest {
 	public void testGeneratingEpicAndTaskAndSubtaskWithInheritance() throws Exception {
 		generate("template-epic-task-subtask-inheritance.yaml");
 		collector.checkThat(jira.getAllIssues().size(), equalTo(13));
-		assertIssue(0, PROJECT + "-1", "Epic", "Epic 1", null, "user1", "1.0");
-		assertIssue(1, PROJECT + "-2", "Task", "Task 11", null, "user11", "1.1");
-		assertIssue(2, PROJECT + "-3", "Sub-task", "Subtask 111", null, "user111", "1.1.1");
+		assertIssue(0, PROJECT + "-1", "Epic", "Epic 1", null, "user1", "1.0", null, null, "Fuse Online");
+		assertIssue(1, PROJECT + "-2", "Task", "Task 11", null, "user11", "1.1", "TEST-1", null,"Fuse Online");
+		assertIssue(2, PROJECT + "-3", "Sub-task", "Subtask 111", null, "user111", "1.1.1", null, "TEST-2", "Fuse Online");
 		assertIssue(3, PROJECT + "-4", "Sub-task", "Subtask 112", null, "user112", "1.1");
 		assertIssue(4, PROJECT + "-5", "Sub-task", "Subtask 113", null, "user11", "1.1");
 		assertIssue(5, PROJECT + "-6", "Task", "Task 12", null, "user12", "1.0");
@@ -228,6 +228,21 @@ public class TaskGeneratorTest extends AbstractTaskGeneratorTest {
 		collector.checkThat(jira.getAllIssues().get(index).getField("fixVersion"), equalTo(expectedVersion));
 		collector.checkThat(jira.getAllIssues().get(index).getField("epic"), equalTo(expectedEpic));
 		collector.checkThat(jira.getAllIssues().get(index).getField("parent"), equalTo(expectedParent));
+	}
+
+	@Override
+	protected void assertIssue(int index, String expectedKey, String expectedIssueType, String expectedSummary, String expectedDescription,
+		String expectedAssignee, String expectedVersion, String expectedEpic, String expectedParent, String expectedComponent) {
+		collector.checkThat("Cannot find issue with key '" + expectedKey + "'",
+			jira.get(withField("key", expectedKey)), notNullValue());
+		collector.checkThat(jira.getAllIssues().get(index).getField("key"), equalTo(expectedKey));
+		collector.checkThat(jira.getAllIssues().get(index).getField("summary"), equalTo(expectedSummary));
+		collector.checkThat(jira.getAllIssues().get(index).getField("description"), equalTo(expectedDescription));
+		collector.checkThat(jira.getAllIssues().get(index).getField("assignee"), equalTo(expectedAssignee));
+		collector.checkThat(jira.getAllIssues().get(index).getField("fixVersion"), equalTo(expectedVersion));
+		collector.checkThat(jira.getAllIssues().get(index).getField("epic"), equalTo(expectedEpic));
+		collector.checkThat(jira.getAllIssues().get(index).getField("parent"), equalTo(expectedParent));
+		collector.checkThat(jira.getAllIssues().get(index).getField("components"), equalTo(expectedComponent));
 	}
 
 	@Override

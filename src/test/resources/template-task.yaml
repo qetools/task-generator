@@ -2,3 +2,4 @@ tasks:
 - summary: Task 1
   assignee: user1
   description: Task for user1
+  component: Fuse Online

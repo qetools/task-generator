@@ -2,6 +2,7 @@ epics:
 - summary: Epic 1
   assignee: user1
   fixVersion: 1.0
+  component: Fuse Online
   tasks:
     - summary: Task 11
       assignee: user11

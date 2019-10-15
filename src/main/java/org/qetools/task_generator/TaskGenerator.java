@@ -216,6 +216,7 @@ public class TaskGenerator {
 		fields.put("description", variableResolver.replace(task.getDescription()));
 		fields.put("assignee", variableResolver.replace(task.getAssignee()));
 		fields.put("fixVersion", variableResolver.replace(task.getFixVersion()));
+		fields.put("components", variableResolver.replace(task.getComponent()));
 		if (task.getEpic() != null) {
 			fields.put("epic", variableResolver.replace(task.getEpic().getKey()));
 		}
@@ -237,6 +238,7 @@ public class TaskGenerator {
 		task.setSummary(variableResolver.replace(task.getSummary()));
 		task.setAssignee(variableResolver.replace(task.getAssignee()));
 		task.setFixVersion(variableResolver.replace(task.getFixVersion()));
+		task.setComponent(variableResolver.replace(task.getComponent()));
 		return task;
 	}
 
@@ -258,6 +260,9 @@ public class TaskGenerator {
 		}
 		if (child.getFixVersion() == null) {
 			child.setFixVersion(parent.getFixVersion());
+		}
+		if (child.getComponent() == null) {
+			child.setComponent(parent.getComponent());
 		}
 		return child;
 	}

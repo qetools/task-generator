@@ -41,6 +41,7 @@ public class Task {
 	private Epic epic;
 	private Task parent;
 	private String description;
+	private String component;
 
 	public String getKey() {
 		return key;
@@ -112,5 +113,13 @@ public class Task {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public String getComponent() {
+		return component;
+	}
+
+	public void setComponent(String component) {
+		this.component = component;
 	}
 }

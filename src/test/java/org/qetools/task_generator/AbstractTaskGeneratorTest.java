@@ -158,7 +158,7 @@ public abstract class AbstractTaskGeneratorTest {
 	public void testGeneratingTask() throws Exception {
 		generate("template-task.yaml");
 		assertNumberOfIssues(1);
-		assertIssue(0, project + "-1", "Task", "Task 1", "Task for user1", "user1", null, null, null);
+		assertIssue(0, project + "-1", "Task", "Task 1", "Task for user1", "user1", null, null, null, "Fuse Online");
 	}
 
 	@Test
@@ -166,18 +166,18 @@ public abstract class AbstractTaskGeneratorTest {
 		generate("template-task.yaml");
 		generate("template-task.yaml");
 		assertNumberOfIssues(1);
-		assertIssue(0, project + "-1", "Task", "Task 1", "Task for user1", "user1", null);
-		assertIssue(0, project + "-1", "Task", "Task 1", "Task for user1", "user1", null, null, null);
+		assertIssue(0, project + "-1", "Task", "Task 1", "Task for user1", "user1", null, null, null, "Fuse Online");
+		assertIssue(0, project + "-1", "Task", "Task 1", "Task for user1", "user1", null, null, null, "Fuse Online");
 	}
 
 	@Test
 	public void testGeneratingTaskUpdate() throws Exception {
 		generate("template-task.yaml");
 		assertNumberOfIssues(1);
-		assertIssue(0, project + "-1", "Task", "Task 1", "Task for user1", "user1", null, null, null);
+		assertIssue(0, project + "-1", "Task", "Task 1", "Task for user1", "user1", null, null, null, "Fuse Online");
 		generate("template-task-update.yaml");
 		assertNumberOfIssues(2);
-		assertIssue(0, project + "-1", "Task", "Task 1", "Task for user1", "user1", null, null, null);
+		assertIssue(0, project + "-1", "Task", "Task 1", "Task for user1", "user1", null, null, null, "Fuse Online");
 		assertIssue(1, project + "-2", "Task", "Task 2", "New description", "user2", null, null, null);
 	}
 
@@ -217,6 +217,9 @@ public abstract class AbstractTaskGeneratorTest {
 
 	protected abstract void assertIssue(int index, String expectedKey, String expectedIssueType, String expectedSummary, String expectedDescription,
 			String expectedAssignee, String expectedVersion, String expectedEpic, String expectedParent);
+
+	protected abstract void assertIssue(int index, String expectedKey, String expectedIssueType, String expectedSummary, String expectedDescription,
+		String expectedAssignee, String expectedVersion, String expectedEpic, String expectedParent, String expectedComponent);
 
 	protected File getFile(String fileName) {
 		return new File(getClass().getClassLoader().getResource(fileName).getFile());
