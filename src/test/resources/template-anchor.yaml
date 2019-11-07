@@ -1,0 +1,10 @@
+tasks:
+- summary: Task 1
+  assignee: user1
+  description: &description1 |
+    Cool description
+- summary: Task 2
+  assignee: user2
+  description: *description1
+- summary: Task 3
+  assignee: user3

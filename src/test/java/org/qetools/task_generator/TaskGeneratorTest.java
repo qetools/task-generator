@@ -21,18 +21,17 @@
  ******************************************************************************/
 package org.qetools.task_generator;
 
-import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.qetools.task_generator.jql.WithField.withField;
-
-import java.io.IOException;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ErrorCollector;
+
+import java.io.IOException;
 
 public class TaskGeneratorTest extends AbstractTaskGeneratorTest {
 
@@ -190,6 +189,15 @@ public class TaskGeneratorTest extends AbstractTaskGeneratorTest {
 		assertIssue(1, PROJECT + "-2", "Sub-task", "Subtask 11", null, "user11", "2.0");
 		assertIssue(2, PROJECT + "-3", "Sub-task", "Subtask 12", null, "user12", "1.0");
 		assertIssue(3, PROJECT + "-4", "Sub-task", "Subtask 13", null, "user1", "1.0");
+	}
+
+	@Test
+	public void testGeneratingWithYamlAnchor() throws Exception {
+		generate("template-anchor.yaml");
+		collector.checkThat(jira.getAllIssues().size(), equalTo(3));
+		assertIssue(0, PROJECT + "-1", "Task", "Task 1", "Cool description\n", "user1", null);
+		assertIssue(1, PROJECT + "-2", "Task", "Task 2", "Cool description\n", "user2", null);
+		assertIssue(2, PROJECT + "-3", "Task", "Task 3", null, "user3", null);
 	}
 
 	@Override
