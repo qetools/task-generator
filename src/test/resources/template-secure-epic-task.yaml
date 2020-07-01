@@ -1,0 +1,10 @@
+epics:
+- summary: Secure Epic 1
+  assignee: user1
+  fixVersion: 1.0
+  description: Epic Task for user1
+  security: My Security Level
+  tasks:
+    - summary: Secure Task 11
+      assignee: user11
+      description: Task for user1

@@ -21,24 +21,22 @@
  ******************************************************************************/
 package org.qetools.task_generator.integration;
 
-import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
-import static org.hamcrest.core.IsNull.notNullValue;
+import static org.hamcrest.core.IsEqual.equalTo;
 import static org.qetools.task_generator.TaskGeneratorApp.SYSTEM_PROPERTY_CONFIG;
-import static org.qetools.task_generator.jql.WithField.withField;
-
-import java.io.IOException;
 
 import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.rules.ErrorCollector;
+
 import org.qetools.task_generator.AbstractTaskGeneratorTest;
 import org.qetools.task_generator.TaskGeneratorApp;
+
+import java.io.IOException;
 
 public class TaskGeneratorIT extends AbstractTaskGeneratorTest {
 
@@ -113,6 +111,12 @@ public class TaskGeneratorIT extends AbstractTaskGeneratorTest {
 		collector.checkThat(jira.getAllIssues().get(index).getField("epic"), equalTo(expectedEpic));
 		collector.checkThat(jira.getAllIssues().get(index).getField("parent"), equalTo(expectedParent));
 		collector.checkThat(jira.getAllIssues().get(index).getField("component"), equalTo(expectedComponent));
+	}
+
+	@Override
+	protected void assertIssueSecurity(int index, String expectedKey, String expectedSecurityId) {
+		collector.checkThat(jira.getAllIssues().get(index).getField("key"), equalTo(expectedKey));
+		collector.checkThat(jira.getAllIssues().get(index).getField("security"), equalTo(expectedSecurityId));
 	}
 
 	@Override

@@ -254,6 +254,14 @@ public class TaskGeneratorTest extends AbstractTaskGeneratorTest {
 	}
 
 	@Override
+	protected void assertIssueSecurity(int index, String expectedKey, String expectedSecurityId) {
+		collector.checkThat("Cannot find issue with key '" + expectedKey + "'", jira.get(withField("key", expectedKey)),
+				notNullValue());
+		collector.checkThat(jira.getAllIssues().get(index).getField("key"), equalTo(expectedKey));
+		collector.checkThat(jira.getAllIssues().get(index).getField("security"), equalTo(expectedSecurityId));
+	}
+
+	@Override
 	protected void generate(String yamlFile) throws IOException {
 		generate(yamlFile, "jira1.properties");
 	}

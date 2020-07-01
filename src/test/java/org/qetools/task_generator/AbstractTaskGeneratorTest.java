@@ -209,6 +209,17 @@ public abstract class AbstractTaskGeneratorTest {
 		assertIssue(1, project + "-2", "Sub-task", "Subtask 11", null,  "user11", null, null, project + "-1");
 		assertIssue(2, project + "-3", "Sub-task", "Subtask 12", null,  "user12", null, null, project + "-1");
 	}
+	
+	@Test
+	public void testGeneratingSecureEpicAndTask() throws Exception {
+		generate("template-secure-epic-task.yaml");
+		assertNumberOfIssues(2);
+		assertIssue(0, project + "-1", "Epic", "Secure Epic 1", "Epic Task for user1", "user1", "1.0", null, null);
+		assertIssueSecurity(0, project + "-1", "My Security Level");
+		assertIssue(1, project + "-2", "Task", "Secure Task 11", "Task for user1", "user11", "1.0", project + "-1", null);
+		assertIssueSecurity(1, project + "-2", "My Security Level");
+	}
+
 
 	protected abstract void assertNumberOfIssues(int expectedNumberOfIssues);
 
@@ -220,6 +231,8 @@ public abstract class AbstractTaskGeneratorTest {
 
 	protected abstract void assertIssue(int index, String expectedKey, String expectedIssueType, String expectedSummary, String expectedDescription,
 		String expectedAssignee, String expectedVersion, String expectedEpic, String expectedParent, String expectedComponent);
+
+	protected abstract void assertIssueSecurity(int index, String expectedKey, String expectedSecurityId);
 
 	protected File getFile(String fileName) {
 		return new File(getClass().getClassLoader().getResource(fileName).getFile());

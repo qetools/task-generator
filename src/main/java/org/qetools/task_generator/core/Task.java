@@ -42,6 +42,7 @@ public class Task {
 	private Task parent;
 	private String description;
 	private String component;
+	private String security;
 
 	public String getKey() {
 		return key;
@@ -121,5 +122,13 @@ public class Task {
 
 	public void setComponent(String component) {
 		this.component = component;
+	}
+
+	public String getSecurity() {
+		return security;
+	}
+
+	public void setSecurity(String security) {
+		this.security = security;
 	}
 }
