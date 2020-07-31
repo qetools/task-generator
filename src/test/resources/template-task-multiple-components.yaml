@@ -1,0 +1,8 @@
+tasks:
+- summary: Task 1
+  assignee: user1
+  fixVersion: 1.0
+  description: Task for user1
+  components:
+    - Fuse Online
+    - Jira

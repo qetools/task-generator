@@ -42,6 +42,7 @@ public class Task {
 	private Task parent;
 	private String description;
 	private String component;
+	private List<String> components;
 	private String security;
 
 	public String getKey() {
@@ -122,6 +123,13 @@ public class Task {
 
 	public void setComponent(String component) {
 		this.component = component;
+	}
+
+	public List<String> getComponents(){
+		return components != null ? components : new ArrayList<String>();
+	}
+	public void setComponents(List<String> components){
+		this.components = components;
 	}
 
 	public String getSecurity() {

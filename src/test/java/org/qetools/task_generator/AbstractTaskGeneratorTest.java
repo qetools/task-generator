@@ -162,6 +162,13 @@ public abstract class AbstractTaskGeneratorTest {
 	}
 
 	@Test
+	public void testGeneratingTaskWithMultipleComponents() throws Exception {
+		generate("template-task-multiple-components.yaml");
+		assertNumberOfIssues(1);
+		assertIssue(0, project + "-1", "Task", "Task 1", "1.0", "Task for user1", "user1", "[Fuse Online, Jira]");
+	}
+
+	@Test
 	public void testGeneratingTaskRetry() throws Exception {
 		generate("template-task.yaml");
 		generate("template-task.yaml");
@@ -225,6 +232,9 @@ public abstract class AbstractTaskGeneratorTest {
 
 	protected abstract void assertIssue(int index, String expectedKey, String expectedIssueType, String expectedSummary, String expectedDescription,
 			String expectedAssignee, String expectedVersion);
+
+	protected abstract void assertIssue(int index, String expectedKey, String expectedIssueType, String expectedSummary, String expectedVersion, String expectedDescription,
+		String expectedAssignee, String expectedComponent);
 
 	protected abstract void assertIssue(int index, String expectedKey, String expectedIssueType, String expectedSummary, String expectedDescription,
 			String expectedAssignee, String expectedVersion, String expectedEpic, String expectedParent);

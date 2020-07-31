@@ -216,7 +216,11 @@ public class TaskGenerator {
 		fields.put("description", variableResolver.replace(task.getDescription()));
 		fields.put("assignee", variableResolver.replace(task.getAssignee()));
 		fields.put("fixVersion", variableResolver.replace(task.getFixVersion()));
-		fields.put("components", variableResolver.replace(task.getComponent()));
+		if (!task.getComponents().isEmpty()) {
+			fields.put("components", variableResolver.replace(task.getComponents()));
+		} else {
+			fields.put("components", variableResolver.replace(task.getComponent()));
+		}
 		if (task.getSecurity() != null) {
 			fields.put("security", variableResolver.replace(task.getSecurity()));
 		}
@@ -242,6 +246,7 @@ public class TaskGenerator {
 		task.setAssignee(variableResolver.replace(task.getAssignee()));
 		task.setFixVersion(variableResolver.replace(task.getFixVersion()));
 		task.setComponent(variableResolver.replace(task.getComponent()));
+		task.setComponents(task.getComponents());
 		return task;
 	}
 
@@ -266,6 +271,9 @@ public class TaskGenerator {
 		}
 		if (child.getComponent() == null) {
 			child.setComponent(parent.getComponent());
+		}
+		if (child.getComponents().isEmpty()){
+			child.setComponents(parent.getComponents());
 		}
 		if (child.getSecurity() == null) {
 			child.setSecurity(parent.getSecurity());

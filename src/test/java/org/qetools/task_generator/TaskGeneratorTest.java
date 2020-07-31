@@ -254,6 +254,19 @@ public class TaskGeneratorTest extends AbstractTaskGeneratorTest {
 	}
 
 	@Override
+	protected void assertIssue(int index, String expectedKey, String expectedIssueType, String expectedSummary, String expectedVersion, String expectedDescription,
+		String expectedAssignee, String expectedComponents){
+		collector.checkThat("Cannot find issue with key '" + expectedKey + "'",
+			jira.get(withField("key", expectedKey)), notNullValue());
+		collector.checkThat(jira.getAllIssues().get(index).getField("key"), equalTo(expectedKey));
+		collector.checkThat(jira.getAllIssues().get(index).getField("summary"), equalTo(expectedSummary));
+		collector.checkThat(jira.getAllIssues().get(index).getField("fixVersion"), equalTo(expectedVersion));
+		collector.checkThat(jira.getAllIssues().get(index).getField("description"), equalTo(expectedDescription));
+		collector.checkThat(jira.getAllIssues().get(index).getField("assignee"), equalTo(expectedAssignee));
+		collector.checkThat(jira.getAllIssues().get(index).getField("components"), equalTo(expectedComponents));
+	};
+
+	@Override
 	protected void assertIssueSecurity(int index, String expectedKey, String expectedSecurityId) {
 		collector.checkThat("Cannot find issue with key '" + expectedKey + "'", jira.get(withField("key", expectedKey)),
 				notNullValue());
