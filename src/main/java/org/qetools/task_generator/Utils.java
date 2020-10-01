@@ -25,7 +25,9 @@ import static org.apache.commons.text.lookup.StringLookupFactory.INSTANCE;
 
 import java.io.File;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -77,5 +79,34 @@ public class Utils {
 			map.put(m.group(1), m.group(2));
 		}
 		return map;
+	}
+
+	/**
+	 * Creates a list of strings from given strings. It also parses array strings
+	 * such as
+	 * 
+	 * <pre>
+	 * [string1, string2]
+	 * </pre>
+	 * 
+	 * so that it doesn't create a list of a list.
+	 * 
+	 * @param strings
+	 * @return
+	 */
+	public static List<String> list(String... strings) {
+		List<String> list = new ArrayList<>();
+		for (String string : strings) {
+			if (string.matches("\\[\\w*(, \\w+)*\\]")) {
+				String newString = string.substring(1, string.length() - 1);
+				String[] newStrings = newString.split(",");
+				for (String newStringItem : newStrings) {
+					list.add(newStringItem.trim());
+				}
+			} else {
+				list.add(string);
+			}
+		}
+		return list;
 	}
 }

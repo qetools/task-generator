@@ -23,8 +23,10 @@ package org.qetools.task_generator;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 
+import java.util.List;
 import java.util.Map;
 
+import org.hamcrest.core.IsCollectionContaining;
 import org.hamcrest.core.IsEqual;
 import org.junit.Rule;
 import org.junit.Test;
@@ -66,5 +68,27 @@ public class UtilsTest {
 		Map<String, String> map = Utils.parseQuery("summary ~ \"Task 1\" AND key = '\"TEST-1\"'");
 		collector.checkThat(map.get("summary"), IsEqual.equalTo("Task 1"));
 		collector.checkThat(map.get("key"), equalTo("TEST-1"));
+	}
+	
+	@Test
+	public void testCreatingListFromOneString() {
+		List<String> list = Utils.list("string1");
+		collector.checkThat(list.size(), IsEqual.equalTo(1));
+		collector.checkThat(list, IsCollectionContaining.hasItem("string1"));
+	}
+	
+	@Test
+	public void testCreatingListFromTwoStrings() {
+		List<String> list = Utils.list("string1", "string2");
+		collector.checkThat(list.size(), IsEqual.equalTo(2));
+		collector.checkThat(list, IsCollectionContaining.hasItem("string1"));
+		collector.checkThat(list, IsCollectionContaining.hasItem("string2"));
+	}
+	@Test
+	public void testCreatingListFromArrayString() {
+		List<String> list = Utils.list("[string1, string2]");
+		collector.checkThat(list.size(), IsEqual.equalTo(2));
+		collector.checkThat(list, IsCollectionContaining.hasItem("string1"));
+		collector.checkThat(list, IsCollectionContaining.hasItem("string2"));
 	}
 }

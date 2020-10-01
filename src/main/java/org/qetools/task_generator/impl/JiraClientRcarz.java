@@ -21,6 +21,8 @@
  ******************************************************************************/
 package org.qetools.task_generator.impl;
 
+import static org.qetools.task_generator.Utils.list;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -124,13 +126,6 @@ public class JiraClientRcarz implements JiraClient {
 		return jiraIssues;
 	}
 
-	private static List<String> list(String... strings) {
-		List<String> list = new ArrayList<>();
-		for (String string : strings) {
-			list.add(string);
-		}
-		return list;
-	}
 
 	@Override
 	public JiraIssue get(JiraQuery jiraQuery) {
